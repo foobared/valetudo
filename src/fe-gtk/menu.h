@@ -36,6 +36,3 @@ void menu_change_layout (void);
 #define MENU_ID_JOIN 11
 #define MENU_ID_USERMENU 12
 
-#if (MENU_ID_NUM < MENU_ID_USERMENU)
-#error MENU_ID_NUM is set wrong
-#endif

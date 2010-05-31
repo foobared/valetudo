@@ -287,6 +287,7 @@ fe_init (void)
 void
 fe_main (void)
 {
+	vala_log("main here\n");
 	gtk_main ();
 
 	/* sleep for 3 seconds so any QUIT messages are not lost. The  */
@@ -596,7 +597,8 @@ void
 fe_print_text (struct session *sess, char *text, time_t stamp)
 {
 	PrintTextRaw (sess->res->buffer, (unsigned char *)text, prefs.indent_nicks, stamp);
-
+	vala_fe_print_text(sess, text, stamp);
+	/*
 	if (!sess->new_data && sess != current_tab &&
 		 sess->gui->is_tab && !sess->nick_said && stamp == 0)
 	{
@@ -606,6 +608,7 @@ fe_print_text (struct session *sess, char *text, time_t stamp)
 		else
 			fe_set_tab_color (sess, 1);
 	}
+	*/
 }
 
 void
