@@ -289,11 +289,6 @@ fe_main (void)
 {
 	vala_log("main here\n");
 	gtk_main ();
-
-	/* sleep for 3 seconds so any QUIT messages are not lost. The  */
-	/* GUI is closed at this point, so the user doesn't even know! */
-	if (prefs.wait_on_exit)
-		sleep (3);
 }
 
 void
@@ -312,7 +307,9 @@ fe_exit (void)
 int
 fe_timeout_add (int interval, void *callback, void *userdata)
 {
-	return g_timeout_add (interval, (GSourceFunc) callback, userdata);
+	// for some obscure reason it works. but you should investigate into 
+	// not dropping userdata.
+	return vala_fe_timeout_add(interval, callback, userdata);
 }
 
 void

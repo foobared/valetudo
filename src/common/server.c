@@ -250,8 +250,9 @@ tcp_send_len (server *serv, char *buf, int len)
 	serv->outbound_queue = g_slist_append (serv->outbound_queue, dbuf);
 	serv->sendq_len += len; /* tcp_send_queue uses strlen */
 
-	if (tcp_send_queue (serv) && noqueue)
+	if (tcp_send_queue (serv) && noqueue) {
 		fe_timeout_add (500, tcp_send_queue, serv);
+	}
 
 	return 1;
 }
