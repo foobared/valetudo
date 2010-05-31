@@ -1,6 +1,15 @@
 using XchatFrontend;
 using GLib;
 
+void vala_fe_init () {
+	palette_load ();
+	key_init ();
+	pixmaps_init ();
+
+	channelwin_pix = pixmap_load_from_file (prefs.background);
+	input_style = create_input_style (new Gtk.Style());
+}
+
 uint vala_fe_timeout_add (int interval, SourceFunc callback) {
     // magic from the other side. vala automatically adds a new parameter.
     return Timeout.add(interval, callback);

@@ -276,12 +276,7 @@ create_input_style (GtkStyle *style)
 void
 fe_init (void)
 {
-	palette_load ();
-	key_init ();
-	pixmaps_init ();
-
-	channelwin_pix = pixmap_load_from_file (prefs.background);
-	input_style = create_input_style (gtk_style_new ());
+	vala_fe_init();
 }
 
 void
@@ -316,7 +311,6 @@ void
 fe_timeout_remove (int tag)
 {
 	vala_fe_timeout_remove(tag);
-	//g_source_remove (tag);
 }
 
 #ifdef WIN32
