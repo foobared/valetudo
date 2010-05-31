@@ -315,7 +315,8 @@ fe_timeout_add (int interval, void *callback, void *userdata)
 void
 fe_timeout_remove (int tag)
 {
-	g_source_remove (tag);
+	vala_fe_timeout_remove(tag);
+	//g_source_remove (tag);
 }
 
 #ifdef WIN32

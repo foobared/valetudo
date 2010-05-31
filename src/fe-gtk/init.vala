@@ -6,6 +6,10 @@ uint vala_fe_timeout_add (int interval, SourceFunc callback) {
     return Timeout.add(interval, callback);
 }
 
+void vala_fe_timeout_remove (int tag) {
+    Source.remove(tag);
+}
+
 void vala_fe_print_text(Session s, string text, time_t time) {
 	PrintTextRaw(s.res->buffer, text, prefs.indent_nicks, time);
 	if (!s.new_data && s != current_tab &&
