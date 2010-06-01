@@ -282,7 +282,6 @@ fe_init (void)
 void
 fe_main (void)
 {
-	vala_log("main here\n");
 	gtk_main ();
 }
 
