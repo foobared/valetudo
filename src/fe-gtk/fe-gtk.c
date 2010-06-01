@@ -128,7 +128,6 @@ static char *arg_cfgdir = NULL;
 static gint arg_show_autoload = 0;
 static gint arg_show_config = 0;
 static gint arg_show_version = 0;
-static gint arg_minimize = 0;
 
 static const GOptionEntry gopt_entries[] = 
 {
@@ -142,7 +141,6 @@ static const GOptionEntry gopt_entries[] =
  {"command",	'c', 0, G_OPTION_ARG_STRING,	&arg_command, N_("Execute command:"), "COMMAND"},
  {"existing",	'e', 0, G_OPTION_ARG_NONE,	&arg_existing, N_("Open URL or execute command in an existing XChat"), NULL},
 #endif
- {"minimize",	 0,  0, G_OPTION_ARG_INT,	&arg_minimize, N_("Begin minimized. Level 0=Normal 1=Iconified 2=Tray"), N_("level")},
  {"version",	'v', 0, G_OPTION_ARG_NONE,	&arg_show_version, N_("Show version information"), NULL},
  {NULL}
 };
@@ -152,12 +150,6 @@ fe_args (int argc, char *argv[])
 {
 	GError *error = NULL;
 	GOptionContext *context;
-
-#ifdef ENABLE_NLS
-	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
-	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-	textdomain (GETTEXT_PACKAGE);
-#endif
 
 	context = g_option_context_new (NULL);
 	g_option_context_add_main_entries (context, gopt_entries, GETTEXT_PACKAGE);
@@ -322,47 +314,6 @@ fe_timeout_remove (int tag)
 	vala_fe_timeout_remove(tag);
 }
 
-#ifdef WIN32
-
-static void
-log_handler (const gchar   *log_domain,
-		       GLogLevelFlags log_level,
-		       const gchar   *message,
-		       gpointer	      unused_data)
-{
-	session *sess;
-
-	if (getenv ("XCHAT_WARNING_IGNORE"))
-		return;
-
-	sess = find_dialog (serv_list->data, "(warnings)");
-	if (!sess)
-		sess = new_ircwindow (serv_list->data, "(warnings)", SESS_DIALOG, 0);
-
-	PrintTextf (sess, "%s\t%s\n", log_domain, message);
-	if (getenv ("XCHAT_WARNING_ABORT"))
-		abort ();
-}
-
-#endif
-
-/* install tray stuff */
-
-static int
-fe_idle (gpointer data)
-{
-	session *sess = sess_list->data;
-
-	plugin_add (sess, NULL, NULL, tray_plugin_init, tray_plugin_deinit, NULL, FALSE);
-
-	if (arg_minimize == 1)
-		gtk_window_iconify (GTK_WINDOW (sess->gui->window));
-	else if (arg_minimize == 2)
-		tray_toggle_visibility (FALSE);
-
-	return 0;
-}
-
 void
 fe_new_window (session *sess, int focus)
 {
@@ -379,16 +330,6 @@ fe_new_window (session *sess, int focus)
 	}
 
 	mg_changui_new (sess, NULL, tab, focus);
-
-#ifdef WIN32
-	g_log_set_handler ("GLib", G_LOG_LEVEL_CRITICAL|G_LOG_LEVEL_WARNING, (GLogFunc)log_handler, 0);
-	g_log_set_handler ("GLib-GObject", G_LOG_LEVEL_CRITICAL|G_LOG_LEVEL_WARNING, (GLogFunc)log_handler, 0);
-	g_log_set_handler ("Gdk", G_LOG_LEVEL_CRITICAL|G_LOG_LEVEL_WARNING, (GLogFunc)log_handler, 0);
-	g_log_set_handler ("Gtk", G_LOG_LEVEL_CRITICAL|G_LOG_LEVEL_WARNING, (GLogFunc)log_handler, 0);
-#endif
-
-	if (!sess_list->next)
-		g_idle_add (fe_idle, NULL);
 }
 
 void
