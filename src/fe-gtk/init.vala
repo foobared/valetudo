@@ -26,8 +26,8 @@ void vala_fe_new_window (Session* s, int focus) {
     mg_changui_new(s, null, tab, focus);
 }
 
+static bool done_rc = false;
 Gtk.Style vala_create_input_style (Gtk.Style style) {
-    bool done_rc = false;
     int ColFg = 34; // it's a define
     int ColBg = 35;
     Pango.FontDescription fd;
