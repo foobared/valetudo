@@ -119,6 +119,14 @@ void vala_fe_set_topic (Session* s, string topic, string stripped_topic) {
     }
 }
 
+void vala_fe_set_highlight (Session* s) {
+    if (s->gui->is_tab)
+        fe_set_tab_color(s, 3); // set tab to blue
+
+    if (prefs.input_flash_hilight)
+        fe_flash_window(s); // taskbar flash
+}
+
 
 ////////
 

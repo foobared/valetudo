@@ -31,11 +31,14 @@ namespace XchatFrontend {
         bool tabchannels;
         string font_normal;
         int style_inputbox;
+        bool input_flash_hilight;
     }
     [CCode(type="struct session *", cname="current_tab")]
     Session* current_tab;
     [CCode(cname="fe_set_tab_color")]
     void fe_set_tab_color(Session* s, int i);
+    [CCode(cname="fe_flash_window")]
+    void fe_flash_window(Session* s);
     [CCode(cname="PrintTextRaw")]
     void PrintTextRaw(void *xtbuf, string *text, int indent, time_t stamp);
     [CCode(cname="prefs")]
