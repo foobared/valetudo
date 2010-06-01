@@ -850,46 +850,16 @@ xchat_exit (void)
 	fe_exit ();
 }
 
-#ifndef WIN32
-
-static int
-child_handler (gpointer userdata)
-{
-	int pid = GPOINTER_TO_INT (userdata);
-
-	if (waitpid (pid, 0, WNOHANG) == pid)
-		return 0;					  /* remove timeout handler */
-	return 1;						  /* keep the timeout handler */
-}
-
-#endif
-
 void
 xchat_exec (const char *cmd)
 {
-#ifdef WIN32
 	util_exec (cmd);
-#else
-	int pid = util_exec (cmd);
-	if (pid != -1)
-	/* zombie avoiding system. Don't ask! it has to be like this to work
-      with zvt (which overrides the default handler) */
-		fe_timeout_add (1000, child_handler, GINT_TO_POINTER (pid));
-#endif
 }
 
 void
 xchat_execv (char * const argv[])
 {
-#ifdef WIN32
 	util_execv (argv);
-#else
-	int pid = util_execv (argv);
-	if (pid != -1)
-	/* zombie avoiding system. Don't ask! it has to be like this to work
-      with zvt (which overrides the default handler) */
-		fe_timeout_add (1000, child_handler, GINT_TO_POINTER (pid));
-#endif
 }
 
 int
@@ -898,10 +868,6 @@ main (int argc, char *argv[])
 	int ret;
 	
 	srand (time (0));	/* CL: do this only once! */
-
-#ifdef SOCKS
-	SOCKSinit (argv[0]);
-#endif
 
 	ret = fe_args (argc, argv);
 	if (ret != -1)

@@ -25,7 +25,7 @@ if USE_LIBSEXY
 sexy_spell_entry_c = sexy-spell-entry.c
 endif
 
-VALA_CFLAGS = --vapidir=. --pkg XchatFrontend --pkg gtk+-2.0
+VALA_CFLAGS = --vapidir=. --pkg XchatFrontend --pkg gtk+-2.0 --pkg posix
 
 init.c: init.vala
 	$(VALAC) -C $(VALA_CFLAGS) init.vala

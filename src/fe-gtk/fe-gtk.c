@@ -824,101 +824,10 @@ fe_set_inputbox_contents (session *sess, char *text)
 	}
 }
 
-#ifndef WIN32
-
-static gboolean
-try_browser (const char *browser, const char *arg, const char *url)
-{
-	const char *argv[4];
-	char *path;
-
-	path = g_find_program_in_path (browser);
-	if (!path)
-		return 0;
-
-	argv[0] = path;
-	argv[1] = url;
-	argv[2] = NULL;
-	if (arg)
-	{
-		argv[1] = arg;
-		argv[2] = url;
-		argv[3] = NULL;
-	}
-	xchat_execv (argv);
-	g_free (path);
-	return 1;
-}
-
-#endif
-
-static void
-fe_open_url_inner (const char *url)
-{
-#ifdef WIN32
-	ShellExecute (0, "open", url, NULL, NULL, SW_SHOWNORMAL);
-#else
-	/* universal desktop URL opener (from xdg-utils). Supports gnome,kde,xfce4. */
-	if (try_browser ("xdg-open", NULL, url))
-		return;
-
-	/* try to detect GNOME */
-	if (g_getenv ("GNOME_DESKTOP_SESSION_ID"))
-	{
-		if (try_browser ("gnome-open", NULL, url)) /* Gnome 2.4+ has this */
-			return;
-	}
-
-	/* try to detect KDE */
-	if (g_getenv ("KDE_FULL_SESSION"))
-	{
-		if (try_browser ("kfmclient", "exec", url))
-			return;
-	}
-
-	/* everything failed, what now? just try firefox */
-	if (try_browser ("firefox", NULL, url))
-		return;
-
-	/* fresh out of ideas... */
-	try_browser ("mozilla", NULL, url);
-#endif
-}
-
-static void
-fe_open_url_locale (const char *url)
-{
-#ifndef WIN32
-	if (url[0] != '/' && strchr (url, ':') == NULL)
-	{
-		url = g_strdup_printf ("http://%s", url);
-		fe_open_url_inner (url);
-		g_free ((char *)url);
-		return;
-	}
-#endif
-	fe_open_url_inner (url);
-}
-
 void
 fe_open_url (const char *url)
 {
-	char *loc;
-
-	if (prefs.utf8_locale)
-	{
-		fe_open_url_locale (url);
-		return;
-	}
-
-	/* the OS expects it in "locale" encoding. This makes it work on
-	   unix systems that use ISO-8859-x and Win32. */
-	loc = g_locale_from_utf8 (url, -1, 0, 0, 0);
-	if (loc)
-	{
-		fe_open_url_locale (loc);
-		g_free (loc);
-	}
+	vala_fe_open_url(url);
 }
 
 void

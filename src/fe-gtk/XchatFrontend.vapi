@@ -62,4 +62,6 @@ namespace XchatFrontend {
     }
     [CCode(cname="mg_changui_new")]
     void mg_changui_new(Session* s, RestoreGui* res, int tab, int focus);
+    [CCode(cname="xchat_execv")]
+    void xchat_execv(char** argv);
 }

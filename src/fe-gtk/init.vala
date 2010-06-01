@@ -1,4 +1,5 @@
 using XchatFrontend;
+using Posix;
 using GLib;
 
 void vala_redraw_trans_xtexts () {
@@ -43,7 +44,7 @@ void vala_fe_timeout_remove (int tag) {
     Source.remove(tag);
 }
 
-void vala_fe_print_text(Session* s, string text, time_t time) {
+void vala_fe_print_text (Session* s, string text, time_t time) {
 	PrintTextRaw(s->res->buffer, text, prefs.indent_nicks, time);
 	if (!s->new_data && s != current_tab &&
         s->gui->is_tab && !s->nick_said && time == 0) {
@@ -53,6 +54,33 @@ void vala_fe_print_text(Session* s, string text, time_t time) {
 	}
 }
 
+bool try_browser (string browser, string url) {
+    Pid pid;
+    var path = Environment.find_program_in_path(browser);
+    if (null == path) return false;
+    string[] argv = {path, url, null};
+    xchat_execv(argv);
+    return true;
+}
+
+void vala_fe_open_url (string url) {
+    Func test;
+    test = (url) => {
+        string u = (string)url;
+        if (try_browser("xdg-open", u))
+            return;
+        if (try_browser("firefox", u))
+            return;
+    };
+    if (url[0] != '/' && !url.contains(":")) {
+        test("http://%s".printf(url));
+    } else test(url);
+}
+
+
+
+////////
+
 void vala_log(string ss) {
-    stdout.printf("%s\n", ss);
+    GLib.stdout.printf("%s\n", ss);
 }
