@@ -15,6 +15,16 @@ void vala_redraw_trans_xtexts () {
     });
 }
 
+void vala_fe_new_window (Session s, int focus) {
+    int tab = 0;
+    if (s.type == 3 /*SESS_DIALOG*/) {
+        if(prefs.privmsgtab) tab = 1;
+    } else {
+        if(prefs.tabchannels) tab = 1;
+    }
+    mg_changui_new(s, null, tab, focus);
+}
+
 void vala_fe_init () {
 	palette_load ();
 	key_init ();

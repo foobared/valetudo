@@ -317,19 +317,7 @@ fe_timeout_remove (int tag)
 void
 fe_new_window (session *sess, int focus)
 {
-	int tab = FALSE;
-
-	if (sess->type == SESS_DIALOG)
-	{
-		if (prefs.privmsgtab)
-			tab = TRUE;
-	} else
-	{
-		if (prefs.tabchannels)
-			tab = TRUE;
-	}
-
-	mg_changui_new (sess, NULL, tab, focus);
+	vala_fe_new_window(sess, focus);
 }
 
 void

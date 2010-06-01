@@ -19,11 +19,14 @@ namespace XchatFrontend {
         bool nick_said;
         SessionGui* gui;
         RestoreGui* res;
+        int type;
     }
     [CCode(type="struct xchatprefs", cname="struct xchatprefs")]
     public struct XchatPrefs {
         int indent_nicks;
         string background;
+        bool privmsgtab;
+        bool tabchannels;
     }
     [CCode(type="struct session *", cname="current_tab")]
     Session current_tab;
@@ -57,4 +60,6 @@ namespace XchatFrontend {
         [CCode(cname="gtk_xtext_refresh")]
         public void refresh (int do_trans);
     }
+    [CCode(cname="mg_changui_new")]
+    void mg_changui_new(Session s, RestoreGui* res, int tab, int focus);
 }
