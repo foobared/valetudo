@@ -111,7 +111,6 @@ void vala_fe_open_url (string url) {
 }
 
 void vala_fe_set_topic (Session* s, string topic, string stripped_topic) {
-    print("success\n");
     if (!s->gui->is_tab || s == current_tab) {
         (s->gui->topic_entry).set_text(stripped_topic);
         mg_set_topic_tip(s);
