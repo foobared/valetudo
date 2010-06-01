@@ -15,9 +15,9 @@ void vala_redraw_trans_xtexts () {
     });
 }
 
-void vala_fe_new_window (Session s, int focus) {
+void vala_fe_new_window (Session* s, int focus) {
     int tab = 0;
-    if (s.type == 3 /*SESS_DIALOG*/) {
+    if (s->type == 3 /*SESS_DIALOG*/) {
         if(prefs.privmsgtab) tab = 1;
     } else {
         if(prefs.tabchannels) tab = 1;
@@ -43,12 +43,12 @@ void vala_fe_timeout_remove (int tag) {
     Source.remove(tag);
 }
 
-void vala_fe_print_text(Session s, string text, time_t time) {
-	PrintTextRaw(s.res->buffer, text, prefs.indent_nicks, time);
-	if (!s.new_data && s != current_tab &&
-        s.gui->is_tab && !s.nick_said && time == 0) {
-		s.new_data = true;
-		if (s.msg_said) fe_set_tab_color(s, 2);
+void vala_fe_print_text(Session* s, string text, time_t time) {
+	PrintTextRaw(s->res->buffer, text, prefs.indent_nicks, time);
+	if (!s->new_data && s != current_tab &&
+        s->gui->is_tab && !s->nick_said && time == 0) {
+		s->new_data = true;
+		if (s->msg_said) fe_set_tab_color(s, 2);
 		else fe_set_tab_color(s, 1);
 	}
 }
