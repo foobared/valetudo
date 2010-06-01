@@ -195,3 +195,6 @@ void SPELL_ENTRY_INSERT (GtkWidget *entry, const char *text, int len, int *pos);
 #define SPELL_ENTRY_SET_POS(e,p) gtk_editable_set_position(GTK_EDITABLE(e),p);
 #define SPELL_ENTRY_INSERT(e,t,l,p) gtk_editable_insert_text(GTK_EDITABLE(e),t,l,p)
 #endif
+
+
+char *cursor_color_rc;

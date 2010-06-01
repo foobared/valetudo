@@ -27,6 +27,8 @@ namespace XchatFrontend {
         string background;
         bool privmsgtab;
         bool tabchannels;
+        string font_normal;
+        int style_inputbox;
     }
     [CCode(type="struct session *", cname="current_tab")]
     Session* current_tab;
@@ -46,6 +48,10 @@ namespace XchatFrontend {
     Gdk.Pixmap channelwin_pix;
     [CCode(cname="input_style")]
     Gtk.Style input_style;
+    [CCode(cname="cursor_color_rc")]
+    string cursor_color_rc;
+    [CCode(cname="colors")]
+    Gdk.Color[] colors;
     [CCode(cname="sess_list")]
     SList<Session*> sess_list;
     [CCode(cname="pixmap_load_from_file")]
@@ -60,6 +66,8 @@ namespace XchatFrontend {
         [CCode(cname="gtk_xtext_refresh")]
         public void refresh (int do_trans);
     }
+    [CCode(cname="fe_message")]
+    void fe_message(string s, int i);
     [CCode(cname="mg_changui_new")]
     void mg_changui_new(Session* s, RestoreGui* res, int tab, int focus);
     [CCode(cname="xchat_execv")]

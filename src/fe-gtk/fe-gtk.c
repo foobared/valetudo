@@ -68,60 +68,6 @@
 GdkPixmap *channelwin_pix;
 
 
-#ifdef USE_XLIB
-
-#if 0
-static void
-redraw_trans_xtexts (void)
-{
-	printf("yes\n");
-	vala_redraw_trans_xtexts();
-	/*
-	GSList *list = sess_list;
-	session *sess;
-	int done_main = FALSE;
-
-	while (list)
-	{
-		sess = list->data;
-		if (GTK_XTEXT (sess->gui->xtext)->transparent)
-		{
-			if (!sess->gui->is_tab || !done_main)
-				gtk_xtext_refresh (GTK_XTEXT (sess->gui->xtext), 1);
-			if (sess->gui->is_tab)
-				done_main = TRUE;
-		}
-		list = list->next;
-	}
-	*/
-}
-#endif
-
-#if 0
-static GdkFilterReturn
-root_event_cb (GdkXEvent *xev, GdkEventProperty *event, gpointer data)
-{
-	printf("root_event_cb\n");
-	static Atom at = None;
-	XEvent *xevent = (XEvent *)xev;
-
-	if (xevent->type == PropertyNotify)
-	{
-		printf("root_event_cb first if -- at,nonde,atom:%p,%p,%p\n",
-				at,None,xevent->xproperty.atom);
-		if (at == None)
-			at = XInternAtom (xevent->xproperty.display, "_XROOTPMAP_ID", True);
-
-		if (at == xevent->xproperty.atom)
-			redraw_trans_xtexts ();
-	}
-
-	return GDK_FILTER_CONTINUE;
-}
-#endif
-
-#endif
-
 /* === command-line parameter parsing : requires glib 2.6 === */
 
 static char *arg_cfgdir = NULL;
@@ -231,7 +177,7 @@ fe_args (int argc, char *argv[])
 	return -1;
 }
 
-const char cursor_color_rc[] =
+char *cursor_color_rc =
 	"style \"xc-ib-st\""
 	"{"
 #ifdef USE_GTKSPELL
@@ -245,34 +191,7 @@ const char cursor_color_rc[] =
 GtkStyle *
 create_input_style (GtkStyle *style)
 {
-	char buf[256];
-	static int done_rc = FALSE;
-
-	pango_font_description_free (style->font_desc);
-	style->font_desc = pango_font_description_from_string (prefs.font_normal);
-
-	/* fall back */
-	if (pango_font_description_get_size (style->font_desc) == 0)
-	{
-		snprintf (buf, sizeof (buf), _("Failed to open font:\n\n%s"), prefs.font_normal);
-		fe_message (buf, FE_MSG_ERROR);
-		pango_font_description_free (style->font_desc);
-		style->font_desc = pango_font_description_from_string ("sans 11");
-	}
-
-	if (prefs.style_inputbox && !done_rc)
-	{
-		done_rc = TRUE;
-		sprintf (buf, cursor_color_rc, (colors[COL_FG].red >> 8),
-			(colors[COL_FG].green >> 8), (colors[COL_FG].blue >> 8));
-		gtk_rc_parse_string (buf);
-	}
-
-	style->bg[GTK_STATE_NORMAL] = colors[COL_FG];
-	style->base[GTK_STATE_NORMAL] = colors[COL_BG];
-	style->text[GTK_STATE_NORMAL] = colors[COL_FG];
-
-	return style;
+	return vala_create_input_style(style);
 }
 
 void

@@ -26,13 +26,46 @@ void vala_fe_new_window (Session* s, int focus) {
     mg_changui_new(s, null, tab, focus);
 }
 
-void vala_fe_init () {
-	palette_load ();
-	key_init ();
-	pixmaps_init ();
+Gtk.Style vala_create_input_style (Gtk.Style style) {
+    bool done_rc = false;
+    int ColFg = 34; // it's a define
+    int ColBg = 35;
+    Pango.FontDescription fd;
+    fd = Pango.FontDescription.from_string(prefs.font_normal);
+    style.font_desc = fd;
 
-	channelwin_pix = pixmap_load_from_file (prefs.background);
-	input_style = create_input_style (new Gtk.Style());
+    /* fall back */
+    if (style.font_desc.get_size() == 0)
+    {
+        var buf = "Failed to open font:\n\n%s".printf(prefs.font_normal);
+        fe_message(buf, 8 /*FE_MSG_ERROR*/);
+        fd = Pango.FontDescription.from_string("sans 11");
+        style.font_desc = fd;
+    }
+
+    if (0 != prefs.style_inputbox && !done_rc)
+    {
+        done_rc = true;
+        var buf = cursor_color_rc.printf((colors[ColFg].red >> 8),
+                                         (colors[ColFg].green >> 8),
+                                         (colors[ColFg].blue >> 8));
+        Gtk.rc_parse_string(buf);
+    }
+
+    style.bg[Gtk.StateType.NORMAL] = colors[ColFg];
+    style.base[Gtk.StateType.NORMAL] = colors[ColBg];
+    style.text[Gtk.StateType.NORMAL] = colors[ColFg];
+
+    return style;
+}
+
+void vala_fe_init () {
+    palette_load ();
+    key_init ();
+    pixmaps_init ();
+
+    channelwin_pix = pixmap_load_from_file (prefs.background);
+    input_style = create_input_style (new Gtk.Style());
 }
 
 uint vala_fe_timeout_add (int interval, SourceFunc callback) {
@@ -45,13 +78,13 @@ void vala_fe_timeout_remove (int tag) {
 }
 
 void vala_fe_print_text (Session* s, string text, time_t time) {
-	PrintTextRaw(s->res->buffer, text, prefs.indent_nicks, time);
-	if (!s->new_data && s != current_tab &&
+    PrintTextRaw(s->res->buffer, text, prefs.indent_nicks, time);
+    if (!s->new_data && s != current_tab &&
         s->gui->is_tab && !s->nick_said && time == 0) {
-		s->new_data = true;
-		if (s->msg_said) fe_set_tab_color(s, 2);
-		else fe_set_tab_color(s, 1);
-	}
+        s->new_data = true;
+        if (s->msg_said) fe_set_tab_color(s, 2);
+        else fe_set_tab_color(s, 1);
+    }
 }
 
 bool try_browser (string browser, string url) {

@@ -1857,7 +1857,7 @@ setup_apply_to_sess (session_gui *gui)
 
 	if (prefs.style_inputbox)
 	{
-		extern char cursor_color_rc[];
+		extern char *cursor_color_rc;
 		char buf[256];
 		sprintf (buf, cursor_color_rc,
 				(colors[COL_FG].red >> 8),
