@@ -219,7 +219,7 @@ struct _GtkXText
 	/* settings/prefs */
 	unsigned int auto_indent:1;
 	unsigned int thinline:1;
-	unsigned int transparent:1;
+	unsigned int transparent;
 	unsigned int shaded:1;
 	unsigned int marker:1;
 	unsigned int separator:1;

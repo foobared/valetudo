@@ -70,9 +70,13 @@ GdkPixmap *channelwin_pix;
 
 #ifdef USE_XLIB
 
+#if 0
 static void
 redraw_trans_xtexts (void)
 {
+	printf("yes\n");
+	vala_redraw_trans_xtexts();
+	/*
 	GSList *list = sess_list;
 	session *sess;
 	int done_main = FALSE;
@@ -89,16 +93,22 @@ redraw_trans_xtexts (void)
 		}
 		list = list->next;
 	}
+	*/
 }
+#endif
 
+#if 0
 static GdkFilterReturn
 root_event_cb (GdkXEvent *xev, GdkEventProperty *event, gpointer data)
 {
+	printf("root_event_cb\n");
 	static Atom at = None;
 	XEvent *xevent = (XEvent *)xev;
 
 	if (xevent->type == PropertyNotify)
 	{
+		printf("root_event_cb first if -- at,nonde,atom:%p,%p,%p\n",
+				at,None,xevent->xproperty.atom);
 		if (at == None)
 			at = XInternAtom (xevent->xproperty.display, "_XROOTPMAP_ID", True);
 
@@ -108,6 +118,7 @@ root_event_cb (GdkXEvent *xev, GdkEventProperty *event, gpointer data)
 
 	return GDK_FILTER_CONTINUE;
 }
+#endif
 
 #endif
 
@@ -222,8 +233,7 @@ fe_args (int argc, char *argv[])
 
 #ifdef USE_XLIB
 	gdk_window_set_events (gdk_get_default_root_window (), GDK_PROPERTY_CHANGE_MASK);
-	gdk_window_add_filter (gdk_get_default_root_window (),
-								  (GdkFilterFunc)root_event_cb, NULL);
+	//gdk_window_add_filter (gdk_get_default_root_window (), (GdkFilterFunc)root_event_cb, NULL);
 #endif
 
 	return -1;

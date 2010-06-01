@@ -1,8 +1,11 @@
+using GLib;
+
 [CCode(cheader_filename = "../common/xchat.h,../common/fe.h,../common/util.h,../common/text.h,../common/cfgfiles.h,../common/xchatc.h,../common/plugin.h,gtkutil.h,maingui.h,textgui.h,pixmaps.h,joind.h,xtext.h,palette.h,menu.h,notifygui.h,textgui.h,fkeys.h,plugin-tray.h,urlgrab.h,fe-gtk.h")]
 namespace XchatFrontend {
     [CCode(type="struct session_gui", cname="struct session_gui")]
     public struct SessionGui {
         bool is_tab;
+        XText xtext;
     }
     [CCode(type="struct restore_gui", cname="struct restore_gui")]
     public struct RestoreGui {
@@ -40,9 +43,18 @@ namespace XchatFrontend {
     Gdk.Pixmap channelwin_pix;
     [CCode(cname="input_style")]
     Gtk.Style input_style;
+    [CCode(cname="sess_list")]
+    SList<Session> sess_list;
     [CCode(cname="pixmap_load_from_file")]
     Gdk.Pixmap pixmap_load_from_file(string fname);
     [CCode(cname="create_input_style")]
     // "owned" is an horrid kludge to be removed in the future.
     Gtk.Style create_input_style(owned Gtk.Style style);
+    [CCode(cname="struct _GtkXText")]
+    public class XText {
+        public bool transparent;
+
+        [CCode(cname="gtk_xtext_refresh")]
+        public void refresh (int do_trans);
+    }
 }

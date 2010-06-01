@@ -1,6 +1,20 @@
 using XchatFrontend;
 using GLib;
 
+void vala_redraw_trans_xtexts () {
+    var done_main = false;
+    print("fu fu fu\n");
+    sess_list.foreach((sess) => {
+        var s = (Session*)sess;
+        if (s->gui->xtext.transparent) {
+            if (!s->gui->is_tab || !done_main)
+                (s->gui->xtext).refresh(1);
+            if (s->gui->is_tab)
+                done_main = true;
+        }
+    });
+}
+
 void vala_fe_init () {
 	palette_load ();
 	key_init ();
