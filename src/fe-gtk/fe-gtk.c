@@ -314,16 +314,7 @@ fe_input_add (int sok, int flags, void *func, void *data)
 void
 fe_set_topic (session *sess, char *topic, char *stripped_topic)
 {
-	if (!sess->gui->is_tab || sess == current_tab)
-	{
-		gtk_entry_set_text (GTK_ENTRY (sess->gui->topic_entry), stripped_topic);
-		mg_set_topic_tip (sess);
-	} else
-	{
-		if (sess->res->topic_text)
-			free (sess->res->topic_text);
-		sess->res->topic_text = strdup (stripped_topic);
-	}
+	vala_fe_set_topic(sess, topic, stripped_topic);
 }
 
 void

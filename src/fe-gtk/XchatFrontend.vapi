@@ -6,9 +6,11 @@ namespace XchatFrontend {
     public struct SessionGui {
         bool is_tab;
         XText xtext;
+        Gtk.Entry topic_entry;
     }
     [CCode(type="struct restore_gui", cname="struct restore_gui")]
     public struct RestoreGui {
+        string topic_text;
         void* buffer;
     }
     [CCode(type="struct session", cname="struct session")]
@@ -72,4 +74,6 @@ namespace XchatFrontend {
     void mg_changui_new(Session* s, RestoreGui* res, int tab, int focus);
     [CCode(cname="xchat_execv")]
     void xchat_execv(char** argv);
+    [CCode(cname="mg_set_topic_tip")]
+    void mg_set_topic_tip(Session* s);
 }
