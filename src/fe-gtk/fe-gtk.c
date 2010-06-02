@@ -215,26 +215,6 @@ void fe_input_remove (int tag){g_source_remove (tag);}
 void fe_update_channel_key (struct session *sess){fe_update_mode_entry (sess, sess->gui->key_entry,&sess->res->key_text, sess->channelkey);fe_set_title (sess);}
 
 void
-fe_close_window (struct session *sess)
-{
-	if (sess->gui->is_tab)
-		mg_tab_close (sess);
-	else
-		gtk_widget_destroy (sess->gui->window);
-}
-
-void
-fe_progressbar_start (session *sess)
-{
-	if (!sess->gui->is_tab || current_tab == sess)
-	/* if it's the focused tab, create it for real! */
-		mg_progressbar_create (sess->gui);
-	else
-	/* otherwise just remember to create on when it gets focused */
-		sess->res->c_graph = TRUE;
-}
-
-void
 fe_progressbar_end (server *serv)
 {
 	GSList *list = sess_list;

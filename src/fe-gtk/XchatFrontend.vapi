@@ -9,6 +9,7 @@ namespace XchatFrontend {
         Gtk.Entry topic_entry;
         Gtk.Entry limit_entry;
         Gtk.Button[] flag_wid; /*NUM_FLAG_WIDS*/
+        Gtk.Window window;
     }
     [Compact]
     [CCode(type="struct server_gui", cname="struct server_gui")]
@@ -21,6 +22,7 @@ namespace XchatFrontend {
     }
     [CCode(type="struct restore_gui", cname="struct restore_gui")]
     public struct RestoreGui {
+        bool c_graph;
         string topic_text;
         char* limit_text; // leave char* or valac will complain
         XText buffer;
@@ -88,4 +90,6 @@ namespace XchatFrontend {
     }
     void fe_set_title(Session* s);
     void notify_gui_update();
+    void mg_tab_close(Session* s);
+    void mg_progressbar_create(SessionGui* sg);
 }

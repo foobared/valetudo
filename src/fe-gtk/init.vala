@@ -66,7 +66,7 @@ uint vala_fe_input_add (int sok, int flags, IOFunc func) {
     return tag;
 }
 
-void fe_notify_update (string name) {
+void fe_notify_update (string? name) {
     if (null == name)
         notify_gui_update();
 }
@@ -155,8 +155,23 @@ void fe_timeout_remove (int tag) {
 }
 
 void fe_text_clear (Session* s, int lines) {
-    print("hithere\n");
     (s->res->buffer).clear(lines);
+}
+
+void fe_close_window (Session* s) {
+    if (s->gui->is_tab)
+        mg_tab_close(s);
+    else
+        (s->gui->window).destroy();
+}
+
+void fe_progressbar_start (Session *s) {
+    if (!s->gui->is_tab || current_tab == s)
+    /* if it's the focused tab, create it for real! */
+        mg_progressbar_create(s->gui);
+    else
+    /* otherwise just remember to create on when it gets focused */
+        s->res->c_graph = true;
 }
 
 void fe_print_text (Session* s, string text, time_t time) {

@@ -122,7 +122,7 @@ typedef struct restore_gui
 	char *queue_text;		/* outbound queue text */
 	char *queue_tip;		/* outbound queue tooltip */
 	short flag_wid_state[NUM_FLAG_WIDS];
-	unsigned int c_graph:1;	/* connecting graph, is there one? */
+	unsigned int c_graph;	/* connecting graph, is there one? */
 } restore_gui;
 
 typedef struct session_gui
