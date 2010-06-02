@@ -185,6 +185,19 @@ void fe_progressbar_end (Server* serv) {
     });
 }
 
+void fe_beep () {
+    Gdk.beep();
+}
+
+void fe_update_channel_key (Session *s) {
+    fe_update_mode_entry(s,s->gui->key_entry,&s->res->key_text,s->channelkey);
+    fe_set_title(s);
+}
+
+void fe_input_remove (int tag) {
+    Source.remove(tag);
+}
+
 void fe_print_text (Session* s, string text, time_t time) {
     PrintTextRaw(s->res->buffer, text, prefs.indent_nicks, time);
     if (!s->new_data && s != current_tab &&

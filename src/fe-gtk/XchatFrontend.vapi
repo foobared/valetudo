@@ -8,6 +8,7 @@ namespace XchatFrontend {
         XText xtext;
         Gtk.Entry topic_entry;
         Gtk.Entry limit_entry;
+        Gtk.Entry key_entry;
         Gtk.Button[] flag_wid; /*NUM_FLAG_WIDS*/
         Gtk.Window window;
         Gtk.Widget bar;
@@ -26,6 +27,7 @@ namespace XchatFrontend {
         bool c_graph;
         string topic_text;
         char* limit_text; // leave char* or valac will complain
+        char* key_text;
         XText buffer;
         Gtk.Window banlist_window;
     }
@@ -33,6 +35,7 @@ namespace XchatFrontend {
     public struct Session {
         Server* server;
         string channel;
+        string channelkey;
         bool new_data;
         bool msg_said;
         bool nick_said;
