@@ -174,6 +174,30 @@ void fe_progressbar_start (Session *s) {
         s->res->c_graph = true;
 }
 
+void fe_progressbar_end (Server* serv) {
+    sess_list.foreach((sess) => {
+        var s = (Session*) sess;
+        if (s->server == serv) {
+            if (null != s->gui->bar)
+                mg_progressbar_destroy(s->gui);
+            s->res->c_graph = false;
+        }
+    });
+}
+
+void fe_beep () {
+    Gdk.beep();
+}
+
+void fe_update_channel_key (Session *s) {
+    fe_update_mode_entry(s,s->gui->key_entry,&s->res->key_text,s->channelkey);
+    fe_set_title(s);
+}
+
+void fe_input_remove (int tag) {
+    Source.remove(tag);
+}
+
 void fe_print_text (Session* s, string text, time_t time) {
     PrintTextRaw(s->res->buffer, text, prefs.indent_nicks, time);
     if (!s->new_data && s != current_tab &&
@@ -222,6 +246,51 @@ void fe_set_hilight (Session* s) {
 
     if (prefs.input_flash_hilight)
         fe_flash_window(s); // taskbar flash
+}
+
+void fe_server_event (Server* serv, int type, int arg) {
+    sess_list.foreach((sess) => {
+        var s = (Session*) sess;
+        if (s->server == serv && (current_tab == s || !s->gui->is_tab)) {
+            SessionGui* gui = s->gui;
+
+            switch (type) {
+            case FeSe.CONNECTING:  /* connecting in progress */
+            case FeSe.RECONDELAY:  /* reconnect delay begun */
+                /* enable Disconnect item */
+                (gui->menu_item[MenuId.DISCONNECT]).set_sensitive(true);
+                break;
+            case FeSe.CONNECT:
+                /* enable Disconnect and Away menu items */
+                (gui->menu_item[MenuId.AWAY]).set_sensitive(true);
+                (gui->menu_item[MenuId.DISCONNECT]).set_sensitive(true);
+                break;
+            case FeSe.LOGGEDIN:    /* end of MOTD */
+                (gui->menu_item[MenuId.JOIN]).set_sensitive(true);
+                /* if number of auto-join channels is zero, open joind */
+                if (arg == 0)
+                    joind_open(serv);
+                break;
+            case FeSe.DISCONNECT:
+                /* disable Disconnect and Away menu items */
+                (gui->menu_item[MenuId.AWAY]).set_sensitive(false);
+                (gui->menu_item[MenuId.DISCONNECT]).set_sensitive(false);
+                (gui->menu_item[MenuId.JOIN]).set_sensitive(false);
+                /* close the join-dialog, if one exists */
+                joind_close(serv);
+                break;
+            }
+        }
+    });
+}
+
+void fe_set_inputbox_contents (Session* s, string text) {
+    if (!s->gui->is_tab || s == current_tab) {
+        (s->gui->input_box).set_text(text);
+    } else {
+        // again, we should free input_text
+        s->res->input_text = text.dup();
+    }
 }
 
 

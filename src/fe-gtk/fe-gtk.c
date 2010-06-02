@@ -211,30 +211,6 @@ fe_new_server (struct server *serv)
 }
 
 void fe_idle_add (void *func, void *data){g_idle_add (func, data);}
-void fe_input_remove (int tag){g_source_remove (tag);}
-void fe_update_channel_key (struct session *sess){fe_update_mode_entry (sess, sess->gui->key_entry,&sess->res->key_text, sess->channelkey);fe_set_title (sess);}
-
-void
-fe_progressbar_end (server *serv)
-{
-	GSList *list = sess_list;
-	session *sess;
-
-	while (list)				  /* check all windows that use this server and  *
-									   * remove the connecting graph, if it has one. */
-	{
-		sess = list->data;
-		if (sess->server == serv)
-		{
-			if (sess->gui->bar)
-				mg_progressbar_destroy (sess->gui);
-			sess->res->c_graph = FALSE;
-		}
-		list = list->next;
-	}
-}
-
-void fe_beep(void){gdk_beep();}
 
 #ifndef WIN32
 static int
@@ -508,67 +484,6 @@ fe_set_inputbox_cursor (session *sess, int delta, int pos)
 	} else
 	{
 		/* we don't support changing non-front tabs yet */
-	}
-}
-
-void
-fe_set_inputbox_contents (session *sess, char *text)
-{
-	if (!sess->gui->is_tab || sess == current_tab)
-	{
-		SPELL_ENTRY_SET_TEXT (sess->gui->input_box, text);
-	} else
-	{
-		if (sess->res->input_text)
-			free (sess->res->input_text);
-		sess->res->input_text = strdup (text);
-	}
-}
-
-void
-fe_server_event (server *serv, int type, int arg)
-{
-	GSList *list = sess_list;
-	session *sess;
-
-	while (list)
-	{
-		sess = list->data;
-		if (sess->server == serv && (current_tab == sess || !sess->gui->is_tab))
-		{
-			session_gui *gui = sess->gui;
-
-			switch (type)
-			{
-			case FE_SE_CONNECTING:	/* connecting in progress */
-			case FE_SE_RECONDELAY:	/* reconnect delay begun */
-				/* enable Disconnect item */
-				gtk_widget_set_sensitive (gui->menu_item[MENU_ID_DISCONNECT], 1);
-				break;
-
-			case FE_SE_CONNECT:
-				/* enable Disconnect and Away menu items */
-				gtk_widget_set_sensitive (gui->menu_item[MENU_ID_AWAY], 1);
-				gtk_widget_set_sensitive (gui->menu_item[MENU_ID_DISCONNECT], 1);
-				break;
-
-			case FE_SE_LOGGEDIN:	/* end of MOTD */
-				gtk_widget_set_sensitive (gui->menu_item[MENU_ID_JOIN], 1);
-				/* if number of auto-join channels is zero, open joind */
-				if (arg == 0)
-					joind_open (serv);
-				break;
-
-			case FE_SE_DISCONNECT:
-				/* disable Disconnect and Away menu items */
-				gtk_widget_set_sensitive (gui->menu_item[MENU_ID_AWAY], 0);
-				gtk_widget_set_sensitive (gui->menu_item[MENU_ID_DISCONNECT], 0);
-				gtk_widget_set_sensitive (gui->menu_item[MENU_ID_JOIN], 0);
-				/* close the join-dialog, if one exists */
-				joind_close (serv);
-			}
-		}
-		list = list->next;
 	}
 }
 
