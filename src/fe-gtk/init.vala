@@ -71,7 +71,7 @@ void fe_notify_update (string? name) {
         notify_gui_update();
 }
 
-void fe_update_mode_entry (Session* s, Gtk.Entry entry, char** text, string new_text) {
+void fe_update_mode_entry (Session* s, Gtk.Entry? entry, char** text, string new_text) {
     // investigate into why I'm called two times every time
 
     if (!s->gui->is_tab || s == current_tab) {
@@ -293,6 +293,23 @@ void fe_set_inputbox_contents (Session* s, string text) {
     }
 }
 
+string fe_get_inputbox_contents (Session *s) {
+    /* not the current tab */
+    if (null != s->res->input_text)
+        return s->res->input_text;
+
+    /* current focused tab */
+    return (s->gui->input_box).text;
+}
+
+int fe_get_inputbox_cursor (Session *s) {
+    /* not the current tab (we don't remember the cursor pos) */
+    if (null != s->res->input_text)
+        return 0;
+
+    /* current focused tab */
+    return (s->gui->input_box).get_position();
+}
 
 ////////
 

@@ -451,28 +451,6 @@ fe_gui_info_ptr (session *sess, int info_type)
 	return NULL;
 }
 
-char *
-fe_get_inputbox_contents (session *sess)
-{
-	/* not the current tab */
-	if (sess->res->input_text)
-		return sess->res->input_text;
-
-	/* current focused tab */
-	return SPELL_ENTRY_GET_TEXT (sess->gui->input_box);
-}
-
-int
-fe_get_inputbox_cursor (session *sess)
-{
-	/* not the current tab (we don't remember the cursor pos) */
-	if (sess->res->input_text)
-		return 0;
-
-	/* current focused tab */
-	return SPELL_ENTRY_GET_POS (sess->gui->input_box);
-}
-
 void
 fe_set_inputbox_cursor (session *sess, int delta, int pos)
 {

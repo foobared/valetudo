@@ -30,7 +30,7 @@ namespace XchatFrontend {
         string topic_text;
         char* limit_text; // leave char* or valac will complain
         char* key_text;
-        char* input_text;
+        string input_text;
         XText buffer;
         Gtk.Window banlist_window;
     }
