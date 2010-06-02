@@ -2,6 +2,16 @@ using XchatFrontend;
 using Posix;
 using GLib;
 
+void fe_main () {
+    Gtk.main();
+}
+
+void fe_cleanup () {}
+
+void fe_exit () {
+    Gtk.main_quit();
+}
+
 void vala_redraw_trans_xtexts () {
     var done_main = false;
     print("fu fu fu\n");

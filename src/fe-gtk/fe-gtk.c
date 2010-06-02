@@ -119,18 +119,7 @@ fe_args (int argc, char *argv[])
 
 	if (arg_show_autoload)
 	{
-#ifdef WIN32
-		/* see the chdir() below */
-		char *sl, *exe = strdup (argv[0]);
-		sl = strrchr (exe, '\\');
-		if (sl)
-		{
-			*sl = 0;
-			printf ("%s\\plugins\n", exe);
-		}
-#else
 		printf ("%s\n", XCHATLIBDIR"/plugins");
-#endif
 		return 0;
 	}
 
@@ -139,25 +128,6 @@ fe_args (int argc, char *argv[])
 		printf ("%s\n", get_xdir_fs ());
 		return 0;
 	}
-
-#ifdef WIN32
-	/* this is mainly for irc:// URL handling. When windows calls us from */
-	/* I.E, it doesn't give an option of "Start in" directory, like short */
-	/* cuts can. So we have to set the current dir manually, to the path  */
-	/* of the exe. */
-	{
-		char *tmp = strdup (argv[0]);
-		char *sl;
-
-		sl = strrchr (tmp, '\\');
-		if (sl)
-		{
-			*sl = 0;
-			chdir (tmp);
-		}
-		free (tmp);
-	}
-#endif
 
 	if (arg_cfgdir)	/* we want filesystem encoding */
 	{
@@ -169,28 +139,17 @@ fe_args (int argc, char *argv[])
 
 	gtk_init (&argc, &argv);
 
-#ifdef USE_XLIB
 	gdk_window_set_events (gdk_get_default_root_window (), GDK_PROPERTY_CHANGE_MASK);
-	//gdk_window_add_filter (gdk_get_default_root_window (), (GdkFilterFunc)root_event_cb, NULL);
-#endif
-
 	return -1;
 }
 
 char *cursor_color_rc =
 	"style \"xc-ib-st\""
 	"{"
-#ifdef USE_GTKSPELL
-		"GtkTextView::cursor-color=\"#%02x%02x%02x\""
-#else
 		"GtkEntry::cursor-color=\"#%02x%02x%02x\""
-#endif
 	"}"
 	"widget \"*.xchat-inputbox\" style : application \"xc-ib-st\"";
 
-void fe_main(void){gtk_main();}
-void fe_cleanup (void){}
-void fe_exit (void){gtk_main_quit();}
 int fe_timeout_add (int interval, void *callback, void *userdata)
 {
 	// for some obscure reason it works. but you should investigate into 
@@ -212,20 +171,18 @@ fe_new_server (struct server *serv)
 
 void fe_idle_add (void *func, void *data){g_idle_add (func, data);}
 
-#ifndef WIN32
 static int
 lastlog_regex_cmp (char *a, regex_t *reg)
 {
 	return !regexec (reg, a, 1, NULL, REG_NOTBOL);
 }
-#endif
 
 void
 fe_lastlog (session *sess, session *lastlog_sess, char *sstr, gboolean regexp)
 {
-#ifndef WIN32
+	// convert into using glib regexps.
+	// also maybe the whole function is of dubious utility
 	regex_t reg;
-#endif
 
 	if (gtk_xtext_is_empty (sess->res->buffer))
 	{
@@ -240,14 +197,12 @@ fe_lastlog (session *sess, session *lastlog_sess, char *sstr, gboolean regexp)
 		return;
 	}
 
-#ifndef WIN32
 	if (regcomp (&reg, sstr, REG_ICASE | REG_EXTENDED | REG_NOSUB) == 0)
 	{
 		gtk_xtext_lastlog (lastlog_sess->res->buffer, sess->res->buffer,
 								 (void *) lastlog_regex_cmp, &reg);
 		regfree (&reg);
 	}
-#endif
 }
 
 static void
