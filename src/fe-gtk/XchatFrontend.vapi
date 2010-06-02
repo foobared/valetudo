@@ -105,11 +105,19 @@ namespace XchatFrontend {
         AWAY, MENUBAR, TOPICBAR, USERLIST, ULBUTTONS, MODEBUTTONS,
         LAYOUT_TABS, LAYOUT_TREE, DISCONNECT, RECONNECT, JOIN, USERMENU
     }
+    [CCode(cprefix="FE_GUI_")]
+    public enum FeGuiAction {
+        HIDE, SHOW, FOCUS, FLASH, COLOR, ICONIFY, MENU, ATTACH, APPLY
+    }
     void fe_set_title(Session* s);
     void notify_gui_update();
     void mg_tab_close(Session* s);
     void mg_progressbar_create(SessionGui* sg);
     void mg_progressbar_destroy(SessionGui* sg);
+    void mg_bring_tofront_sess(Session* s);
+    void mg_detach(Session* s, int arg);
     void joind_open(Server* s);
     void joind_close(Server* s);
+    void menu_bar_toggle();
+    void setup_apply_real(bool a, bool b);
 }

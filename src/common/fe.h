@@ -125,7 +125,7 @@ typedef enum {
 	FE_GUI_ATTACH,
 	FE_GUI_APPLY,
 } fe_gui_action;
-void fe_ctrl_gui (session *sess, fe_gui_action action, int arg);
+void fe_ctrl_gui (session *sess, int action, int arg);
 int fe_gui_info (session *sess, int info_type);
 void *fe_gui_info_ptr (session *sess, int info_type);
 void fe_confirm (const char *message, void (*yesproc)(void *), void (*noproc)(void *), void *ud);

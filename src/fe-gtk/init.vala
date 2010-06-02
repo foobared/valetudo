@@ -342,6 +342,39 @@ int fe_gui_info (Session *s, int info_type) {
     return -1;
 }
 
+void fe_ctrl_gui (Session *s, int action, int arg) {
+    switch (action) {
+    case FeGuiAction.HIDE:
+        (s->gui->window).hide();
+        break;
+    case FeGuiAction.SHOW:
+        (s->gui->window).show();
+        (s->gui->window).present();
+        break;
+    case FeGuiAction.FOCUS:
+        mg_bring_tofront_sess(s);
+        break;
+    case FeGuiAction.FLASH:
+        fe_flash_window(s);
+        break;
+    case FeGuiAction.COLOR:
+        fe_set_tab_color(s, arg);
+        break;
+    case FeGuiAction.ICONIFY:
+        (s->gui->window).iconify();
+        break;
+    case FeGuiAction.MENU:
+        menu_bar_toggle(); /* toggle menubar on/off */
+        break;
+    case FeGuiAction.ATTACH:
+        mg_detach(s, arg); /* arg: 0=toggle 1=detach 2=attach */
+        break;
+    case FeGuiAction.APPLY:
+        setup_apply_real(true, true);
+        break;
+    }
+}
+
 
 ////////
 
