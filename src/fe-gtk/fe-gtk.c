@@ -188,100 +188,31 @@ char *cursor_color_rc =
 	"}"
 	"widget \"*.xchat-inputbox\" style : application \"xc-ib-st\"";
 
-GtkStyle *
-create_input_style (GtkStyle *style)
-{
-	return vala_create_input_style(style);
-}
-
-void
-fe_init (void)
-{
-	vala_fe_init();
-}
-
-void
-fe_main (void)
-{
-	gtk_main ();
-}
-
-void
-fe_cleanup (void)
-{
-	/* it's saved when pressing OK in setup.c */
-	/*palette_save ();*/
-}
-
-void
-fe_exit (void)
-{
-	gtk_main_quit ();
-}
-
-int
-fe_timeout_add (int interval, void *callback, void *userdata)
+GtkStyle *create_input_style(GtkStyle *style){return vala_create_input_style(style);}
+void fe_init(void){vala_fe_init();}
+void fe_main(void){gtk_main();}
+void fe_cleanup (void){}
+void fe_exit (void){gtk_main_quit();}
+int fe_timeout_add (int interval, void *callback, void *userdata)
 {
 	// for some obscure reason it works. but you should investigate into 
 	// not dropping userdata.
 	return vala_fe_timeout_add(interval, callback, userdata);
 }
-
-void
-fe_timeout_remove (int tag)
-{
-	vala_fe_timeout_remove(tag);
-}
-
-void
-fe_new_window (session *sess, int focus)
-{
-	vala_fe_new_window(sess, focus);
-}
+void fe_timeout_remove(int tag){vala_fe_timeout_remove(tag);}
+void fe_new_window(session *sess, int focus){vala_fe_new_window(sess, focus);}
 
 void
 fe_new_server (struct server *serv)
 {
+	// this stuff is difficult to port in vala
 	serv->gui = malloc (sizeof (struct server_gui));
 	memset (serv->gui, 0, sizeof (struct server_gui));
 }
 
-void
-fe_message (char *msg, int flags)
-{
-	GtkWidget *dialog;
-	int type = GTK_MESSAGE_WARNING;
-
-	if (flags & FE_MSG_ERROR)
-		type = GTK_MESSAGE_ERROR;
-	if (flags & FE_MSG_INFO)
-		type = GTK_MESSAGE_INFO;
-
-	dialog = gtk_message_dialog_new (GTK_WINDOW (parent_window), 0, type,
-												GTK_BUTTONS_OK, "%s", msg);
-	if (flags & FE_MSG_MARKUP)
-		gtk_message_dialog_set_markup (GTK_MESSAGE_DIALOG (dialog), msg);
-	g_signal_connect (G_OBJECT (dialog), "response",
-							G_CALLBACK (gtk_widget_destroy), 0);
-	gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
-	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_MOUSE);
-	gtk_widget_show (dialog);
-
-	if (flags & FE_MSG_WAIT)
-		gtk_dialog_run (GTK_DIALOG (dialog));
-}
-
-void
-fe_idle_add (void *func, void *data)
-{
-	g_idle_add (func, data);
-}
-
-void
-fe_input_remove (int tag)
-{
-	g_source_remove (tag);
-}
+void fe_message(char *msg, int flags){vala_fe_message(msg, flags);}
+void fe_idle_add (void *func, void *data){g_idle_add (func, data);}
+void fe_input_remove (int tag){g_source_remove (tag);}
 
 int
 fe_input_add (int sok, int flags, void *func, void *data)
@@ -311,17 +242,8 @@ fe_input_add (int sok, int flags, void *func, void *data)
 	return tag;
 }
 
-void
-fe_set_topic (session *sess, char *topic, char *stripped_topic)
-{
-	vala_fe_set_topic(sess, topic, stripped_topic);
-}
-
-void
-fe_set_hilight (struct session *sess)
-{
-	vala_fe_set_highlight(sess);
-}
+void fe_set_topic (session *sess, char *topic, char *stripped_topic){vala_fe_set_topic(sess, topic, stripped_topic);}
+void fe_set_hilight (struct session *sess){vala_fe_set_highlight(sess);}
 
 static void
 fe_update_mode_entry (session *sess, GtkWidget *entry, char **text, char *new_text)
@@ -429,17 +351,8 @@ fe_progressbar_end (server *serv)
 	}
 }
 
-void
-fe_print_text (struct session *sess, char *text, time_t stamp)
-{
-	vala_fe_print_text(sess, text, stamp);
-}
-
-void
-fe_beep (void)
-{
-	gdk_beep ();
-}
+void fe_print_text(struct session *sess, char *text, time_t stamp){vala_fe_print_text(sess, text, stamp);}
+void fe_beep(void){gdk_beep();}
 
 #ifndef WIN32
 static int

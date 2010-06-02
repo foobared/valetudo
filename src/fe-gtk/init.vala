@@ -26,6 +26,26 @@ void vala_fe_new_window (Session* s, int focus) {
     mg_changui_new(s, null, tab, focus);
 }
 
+void vala_fe_message (string msg, int flags) {
+    var type = Gtk.MessageType.WARNING;
+
+    if (0 != (flags & FeMsg.ERROR))
+        type = Gtk.MessageType.ERROR;
+    if (0 != (flags & FeMsg.INFO))
+        type = Gtk.MessageType.INFO;
+
+    var dialog = new Gtk.MessageDialog(parent_window, 0, type, Gtk.ButtonsType.OK, "%s", msg);
+    if (0  != (flags & FeMsg.MARKUP))
+        dialog.set_markup(msg);
+    dialog.response.connect(()=>{dialog.destroy();});
+    dialog.set_resizable(false);
+    dialog.set_position(Gtk.WindowPosition.MOUSE);
+    dialog.show();
+
+    if (0 != (flags & FeMsg.WAIT))
+        dialog.run();
+}
+
 static bool done_rc = false;
 Gtk.Style vala_create_input_style (Gtk.Style style) {
     int ColFg = 34; // it's a define
@@ -38,7 +58,7 @@ Gtk.Style vala_create_input_style (Gtk.Style style) {
     if (style.font_desc.get_size() == 0)
     {
         var buf = "Failed to open font:\n\n%s".printf(prefs.font_normal);
-        fe_message(buf, 8 /*FE_MSG_ERROR*/);
+        vala_fe_message(buf, FeMsg.ERROR);
         fd = Pango.FontDescription.from_string("sans 11");
         style.font_desc = fd;
     }

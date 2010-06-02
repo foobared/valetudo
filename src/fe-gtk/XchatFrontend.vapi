@@ -8,6 +8,14 @@ namespace XchatFrontend {
         XText xtext;
         Gtk.Entry topic_entry;
     }
+    [Compact]
+    [CCode(type="struct server_gui", cname="struct server_gui")]
+    public struct ServerGui {
+    }
+    [CCode(type="struct server", cname="struct server")]
+    public struct Server {
+        ServerGui* gui;
+    }
     [CCode(type="struct restore_gui", cname="struct restore_gui")]
     public struct RestoreGui {
         string topic_text;
@@ -61,4 +69,9 @@ namespace XchatFrontend {
     void mg_changui_new(Session* s, RestoreGui* res, int tab, int focus);
     void xchat_execv(char** argv);
     void mg_set_topic_tip(Session* s);
+    Gtk.Window parent_window;
+    [CCode(cprefix="FE_MSG_")]
+    public enum FeMsg {
+        WAIT=1, INFO=2, WARN=4, ERROR=8, MARKUP=16
+    }
 }
