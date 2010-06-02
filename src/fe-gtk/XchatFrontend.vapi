@@ -15,7 +15,9 @@ namespace XchatFrontend {
         Gtk.Window window;
         Gtk.Widget bar;
         Gtk.ProgressBar throttlemeter;
+        Gtk.ProgressBar lagometer;
         Gtk.Label throttleinfo;
+        Gtk.Label laginfo;
     }
     [Compact]
     [CCode(type="struct server_gui", cname="struct server_gui")]
@@ -26,6 +28,7 @@ namespace XchatFrontend {
     public struct Server {
         ServerGui* gui;
         int sendq_len;
+        time_t lag_sent;
     }
     [CCode(type="struct restore_gui", cname="struct restore_gui")]
     public struct RestoreGui {
@@ -36,6 +39,9 @@ namespace XchatFrontend {
         string input_text;
         string queue_tip;
         string queue_text;
+        float lag_value;
+        string lag_text;
+        string lag_tip;
         XText buffer;
         Gtk.Window banlist_window;
         float queue_value;
@@ -127,4 +133,5 @@ namespace XchatFrontend {
     void menu_bar_toggle();
     void setup_apply_real(bool a, bool b);
     void add_tip(Gtk.Widget w, string s);
+    int make_ping_time();
 }

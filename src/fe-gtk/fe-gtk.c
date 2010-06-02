@@ -250,63 +250,6 @@ fe_lastlog (session *sess, session *lastlog_sess, char *sstr, gboolean regexp)
 #endif
 }
 
-void
-fe_set_lag (server *serv, int lag)
-{
-	GSList *list = sess_list;
-	session *sess;
-	gdouble per;
-	char lagtext[64];
-	char lagtip[128];
-	unsigned long nowtim;
-
-	if (lag == -1)
-	{
-		if (!serv->lag_sent)
-			return;
-		nowtim = make_ping_time ();
-		lag = (nowtim - serv->lag_sent) / 100000;
-	}
-
-	per = (double)((double)lag / (double)10);
-	if (per > 1.0)
-		per = 1.0;
-
-	snprintf (lagtext, sizeof (lagtext) - 1, "%s%d.%ds",
-				 serv->lag_sent ? "+" : "", lag / 10, lag % 10);
-	snprintf (lagtip, sizeof (lagtip) - 1, "Lag: %s%d.%d seconds",
-				 serv->lag_sent ? "+" : "", lag / 10, lag % 10);
-
-	while (list)
-	{
-		sess = list->data;
-		if (sess->server == serv)
-		{
-			if (sess->res->lag_tip)
-				free (sess->res->lag_tip);
-			sess->res->lag_tip = strdup (lagtip);
-
-			if (!sess->gui->is_tab || current_tab == sess)
-			{
-				if (sess->gui->lagometer)
-				{
-					gtk_progress_bar_set_fraction ((GtkProgressBar *) sess->gui->lagometer, per);
-					add_tip (sess->gui->lagometer->parent, lagtip);
-				}
-				if (sess->gui->laginfo)
-					gtk_label_set_text ((GtkLabel *) sess->gui->laginfo, lagtext);
-			} else
-			{
-				sess->res->lag_value = per;
-				if (sess->res->lag_text)
-					free (sess->res->lag_text);
-				sess->res->lag_text = strdup (lagtext);
-			}
-		}
-		list = list->next;
-	}
-}
-
 static void
 dcc_saveas_cb (struct DCC *dcc, char *file)
 {

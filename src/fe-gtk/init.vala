@@ -5,15 +5,14 @@ using GLib;
 void vala_redraw_trans_xtexts () {
     var done_main = false;
     print("fu fu fu\n");
-    sess_list.foreach((sess) => {
-        var s = (Session*)sess;
+    foreach (Session* s in sess_list) {
         if (s->gui->xtext.transparent) {
             if (!s->gui->is_tab || !done_main)
                 (s->gui->xtext).refresh(1);
             if (s->gui->is_tab)
                 done_main = true;
         }
-    });
+    }
 }
 
 void fe_new_window (Session* s, int focus) {
@@ -175,14 +174,13 @@ void fe_progressbar_start (Session *s) {
 }
 
 void fe_progressbar_end (Server* serv) {
-    sess_list.foreach((sess) => {
-        var s = (Session*) sess;
+    foreach (Session* s in sess_list) {
         if (s->server == serv) {
             if (null != s->gui->bar)
                 mg_progressbar_destroy(s->gui);
             s->res->c_graph = false;
         }
-    });
+    }
 }
 
 void fe_beep () {
@@ -249,8 +247,7 @@ void fe_set_hilight (Session* s) {
 }
 
 void fe_server_event (Server* serv, int type, int arg) {
-    sess_list.foreach((sess) => {
-        var s = (Session*) sess;
+    foreach (Session* s in sess_list) {
         if (s->server == serv && (current_tab == s || !s->gui->is_tab)) {
             SessionGui* gui = s->gui;
 
@@ -281,7 +278,42 @@ void fe_server_event (Server* serv, int type, int arg) {
                 break;
             }
         }
-    });
+    }
+}
+
+void fe_set_lag (Server *serv, int lag) {
+    int nowtim;
+
+    if (lag == -1) {
+        if (0 == serv->lag_sent)
+            return;
+        nowtim = make_ping_time();
+        lag = (nowtim - (int)serv->lag_sent) / 100000;
+    }
+
+    var per = float.min(1.0f, lag/10.0f);
+
+    var pref = (0 != serv->lag_sent) ? "+" : "";
+    var lagtext = "%s%d.%ds".printf(pref, lag/10, lag%10);
+    var lagtip = "Lag: %s%d.%d seconds".printf(pref, lag/10, lag%10);
+
+    foreach (Session* s in sess_list) {
+        if (s->server == serv) {
+            s->res->lag_tip = lagtip;
+
+            if (!s->gui->is_tab || current_tab == s) {
+                if (null != s->gui->lagometer) {
+                    (s->gui->lagometer).set_fraction(per);
+                    add_tip((s->gui->lagometer).get_parent(), lagtip);
+                }
+                if (null != s->gui->laginfo)
+                    (s->gui->laginfo).set_text(lagtext);
+            } else {
+                s->res->lag_value = per;
+                s->res->lag_text = lagtext;
+            }
+        }
+    }
 }
 
 void fe_set_throttle (Server* serv) {
@@ -289,8 +321,7 @@ void fe_set_throttle (Server* serv) {
     string tbuf = "";
     string tip = "";
 
-    sess_list.foreach((sess) => {
-        var s = (Session*) sess;
+    foreach (Session* s in sess_list) {
         if (s->server == serv) {
             tbuf = "%d bytes".printf(serv->sendq_len);
             tip = "Network send queue: %d bytes".printf(serv->sendq_len);
@@ -308,7 +339,7 @@ void fe_set_throttle (Server* serv) {
                 s->res->queue_text = tbuf;
             }
         }
-    });
+    }
 }
 
 void fe_set_inputbox_contents (Session* s, string text) {
