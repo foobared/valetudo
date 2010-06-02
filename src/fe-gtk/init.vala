@@ -46,6 +46,26 @@ void vala_fe_message (string msg, int flags) {
         dialog.run();
 }
 
+uint vala_fe_input_add (int sok, int flags, IOFunc func) {
+    // another miracle case, where dropping an argument works anyway,
+    // because the compiler does dark magic.
+    uint tag, type = 0;
+    var channel = new IOChannel.unix_new(sok);
+    // windows stuff
+    //channel = g_io_channel_win32_new_fd (sok); // if fia_fd
+    //channel = g_io_channel_win32_new_socket (sok);
+
+    if (0 != (flags & Fia.READ))
+        type |= IOCondition.IN | IOCondition.HUP | IOCondition.ERR;
+    if (0 != (flags & Fia.WRITE))
+        type |= IOCondition.OUT | IOCondition.ERR;
+    if (0 != (flags & Fia.EX))
+        type |= IOCondition.PRI;
+
+    tag = channel.add_watch((IOCondition)type, func);
+    return tag;
+}
+
 static bool done_rc = false;
 Gtk.Style vala_create_input_style (Gtk.Style style) {
     int ColFg = 34; // it's a define

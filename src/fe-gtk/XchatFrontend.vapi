@@ -74,4 +74,8 @@ namespace XchatFrontend {
     public enum FeMsg {
         WAIT=1, INFO=2, WARN=4, ERROR=8, MARKUP=16
     }
+    [CCode(cprefix="FIA_")]
+    public enum Fia { // frontend input add, methinks.
+        READ=1, WRITE=2, EX=4, FD=8
+    }
 }

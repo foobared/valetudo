@@ -213,35 +213,7 @@ fe_new_server (struct server *serv)
 void fe_message(char *msg, int flags){vala_fe_message(msg, flags);}
 void fe_idle_add (void *func, void *data){g_idle_add (func, data);}
 void fe_input_remove (int tag){g_source_remove (tag);}
-
-int
-fe_input_add (int sok, int flags, void *func, void *data)
-{
-	int tag, type = 0;
-	GIOChannel *channel;
-
-#ifdef WIN32
-	if (flags & FIA_FD)
-		channel = g_io_channel_win32_new_fd (sok);
-	else
-		channel = g_io_channel_win32_new_socket (sok);
-#else
-	channel = g_io_channel_unix_new (sok);
-#endif
-
-	if (flags & FIA_READ)
-		type |= G_IO_IN | G_IO_HUP | G_IO_ERR;
-	if (flags & FIA_WRITE)
-		type |= G_IO_OUT | G_IO_ERR;
-	if (flags & FIA_EX)
-		type |= G_IO_PRI;
-
-	tag = g_io_add_watch (channel, type, (GIOFunc) func, data);
-	g_io_channel_unref (channel);
-
-	return tag;
-}
-
+int fe_input_add (int sok, int flags, void *func, void *data){vala_fe_input_add(sok, flags, func, data);}
 void fe_set_topic (session *sess, char *topic, char *stripped_topic){vala_fe_set_topic(sess, topic, stripped_topic);}
 void fe_set_hilight (struct session *sess){vala_fe_set_highlight(sess);}
 
