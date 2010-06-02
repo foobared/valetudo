@@ -86,6 +86,12 @@ void vala_fe_update_channel_limit (Session* s) {
     fe_set_title(s);
 }
 
+int vala_fe_is_chanwindow (Server* serv) {
+    if (null == serv->gui->chanlist_window)
+        return 0;
+    return 1;
+}
+
 static bool done_rc = false;
 Gtk.Style vala_create_input_style (Gtk.Style style) {
     int ColFg = 34; // it's a define

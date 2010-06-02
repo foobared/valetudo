@@ -13,6 +13,7 @@ namespace XchatFrontend {
     [Compact]
     [CCode(type="struct server_gui", cname="struct server_gui")]
     public struct ServerGui {
+        Gtk.Window chanlist_window;
     }
     [CCode(type="struct server", cname="struct server")]
     public struct Server {
