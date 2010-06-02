@@ -215,19 +215,6 @@ void fe_input_remove (int tag){g_source_remove (tag);}
 void fe_update_channel_key (struct session *sess){fe_update_mode_entry (sess, sess->gui->key_entry,&sess->res->key_text, sess->channelkey);fe_set_title (sess);}
 
 void
-fe_notify_update (char *name)
-{
-	if (!name)
-		notify_gui_update ();
-}
-
-void
-fe_text_clear (struct session *sess, int lines)
-{
-	gtk_xtext_clear (sess->res->buffer, lines);
-}
-
-void
 fe_close_window (struct session *sess)
 {
 	if (sess->gui->is_tab)

@@ -23,7 +23,7 @@ namespace XchatFrontend {
     public struct RestoreGui {
         string topic_text;
         char* limit_text; // leave char* or valac will complain
-        void* buffer;
+        XText buffer;
         Gtk.Window banlist_window;
     }
     [CCode(type="struct session", cname="struct session")]
@@ -69,7 +69,9 @@ namespace XchatFrontend {
         public bool transparent;
 
         [CCode(cname="gtk_xtext_refresh")]
-        public void refresh (int do_trans);
+        public void refresh(int do_trans);
+        [CCode(cname="gtk_xtext_clear")]
+        public void clear(int lines);
     }
     void fe_message(string s, int i);
     void mg_changui_new(Session* s, RestoreGui* res, int tab, int focus);
@@ -85,4 +87,5 @@ namespace XchatFrontend {
         READ=1, WRITE=2, EX=4, FD=8
     }
     void fe_set_title(Session* s);
+    void notify_gui_update();
 }

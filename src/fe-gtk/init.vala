@@ -66,6 +66,11 @@ uint vala_fe_input_add (int sok, int flags, IOFunc func) {
     return tag;
 }
 
+void fe_notify_update (string name) {
+    if (null == name)
+        notify_gui_update();
+}
+
 void fe_update_mode_entry (Session* s, Gtk.Entry entry, char** text, string new_text) {
     // investigate into why I'm called two times every time
 
@@ -147,6 +152,11 @@ uint vala_fe_timeout_add (int interval, SourceFunc callback) {
 
 void fe_timeout_remove (int tag) {
     Source.remove(tag);
+}
+
+void fe_text_clear (Session* s, int lines) {
+    print("hithere\n");
+    (s->res->buffer).clear(lines);
 }
 
 void fe_print_text (Session* s, string text, time_t time) {
