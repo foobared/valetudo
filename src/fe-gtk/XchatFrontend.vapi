@@ -14,6 +14,8 @@ namespace XchatFrontend {
         Gtk.Widget[] menu_item; /*MENU_ID_NUM*/
         Gtk.Window window;
         Gtk.Widget bar;
+        Gtk.ProgressBar throttlemeter;
+        Gtk.Label throttleinfo;
     }
     [Compact]
     [CCode(type="struct server_gui", cname="struct server_gui")]
@@ -23,6 +25,7 @@ namespace XchatFrontend {
     [CCode(type="struct server", cname="struct server")]
     public struct Server {
         ServerGui* gui;
+        int sendq_len;
     }
     [CCode(type="struct restore_gui", cname="struct restore_gui")]
     public struct RestoreGui {
@@ -31,8 +34,11 @@ namespace XchatFrontend {
         char* limit_text; // leave char* or valac will complain
         char* key_text;
         string input_text;
+        string queue_tip;
+        string queue_text;
         XText buffer;
         Gtk.Window banlist_window;
+        float queue_value;
     }
     [CCode(type="struct session", cname="struct session")]
     public struct Session {
@@ -120,4 +126,5 @@ namespace XchatFrontend {
     void joind_close(Server* s);
     void menu_bar_toggle();
     void setup_apply_real(bool a, bool b);
+    void add_tip(Gtk.Widget w, string s);
 }

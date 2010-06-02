@@ -307,52 +307,6 @@ fe_set_lag (server *serv, int lag)
 	}
 }
 
-void
-fe_set_throttle (server *serv)
-{
-	GSList *list = sess_list;
-	struct session *sess;
-	float per;
-	char tbuf[96];
-	char tip[160];
-
-	per = (float) serv->sendq_len / 1024.0;
-	if (per > 1.0)
-		per = 1.0;
-
-	while (list)
-	{
-		sess = list->data;
-		if (sess->server == serv)
-		{
-			snprintf (tbuf, sizeof (tbuf) - 1, _("%d bytes"), serv->sendq_len);
-			snprintf (tip, sizeof (tip) - 1, _("Network send queue: %d bytes"), serv->sendq_len);
-
-			if (sess->res->queue_tip)
-				free (sess->res->queue_tip);
-			sess->res->queue_tip = strdup (tip);
-
-			if (!sess->gui->is_tab || current_tab == sess)
-			{
-				if (sess->gui->throttlemeter)
-				{
-					gtk_progress_bar_set_fraction ((GtkProgressBar *) sess->gui->throttlemeter, per);
-					add_tip (sess->gui->throttlemeter->parent, tip);
-				}
-				if (sess->gui->throttleinfo)
-					gtk_label_set_text ((GtkLabel *) sess->gui->throttleinfo, tbuf);
-			} else
-			{
-				sess->res->queue_value = per;
-				if (sess->res->queue_text)
-					free (sess->res->queue_text);
-				sess->res->queue_text = strdup (tbuf);
-			}
-		}
-		list = list->next;
-	}
-}
-
 static void
 dcc_saveas_cb (struct DCC *dcc, char *file)
 {

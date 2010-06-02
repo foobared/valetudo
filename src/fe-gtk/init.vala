@@ -284,6 +284,33 @@ void fe_server_event (Server* serv, int type, int arg) {
     });
 }
 
+void fe_set_throttle (Server* serv) {
+    float per = float.min(1.0f, serv->sendq_len / 1024.0f);
+    string tbuf = "";
+    string tip = "";
+
+    sess_list.foreach((sess) => {
+        var s = (Session*) sess;
+        if (s->server == serv) {
+            tbuf = "%d bytes".printf(serv->sendq_len);
+            tip = "Network send queue: %d bytes".printf(serv->sendq_len);
+            s->res->queue_tip = tip;
+
+            if (!s->gui->is_tab || current_tab == s) {
+                if (null != s->gui->throttlemeter) {
+                    (s->gui->throttlemeter).set_fraction(per);
+                    add_tip((s->gui->throttlemeter).get_parent(), tip);
+                }
+                if (null != s->gui->throttleinfo)
+                    (s->gui->throttleinfo).set_text(tbuf);
+            } else {
+                s->res->queue_value = per;
+                s->res->queue_text = tbuf;
+            }
+        }
+    });
+}
+
 void fe_set_inputbox_contents (Session* s, string text) {
     if (!s->gui->is_tab || s == current_tab) {
         (s->gui->input_box).set_text(text);
