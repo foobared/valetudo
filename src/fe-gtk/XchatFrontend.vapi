@@ -7,6 +7,7 @@ namespace XchatFrontend {
         bool is_tab;
         XText xtext;
         Gtk.Entry topic_entry;
+        Gtk.Button[] flag_wid; /*NUM_FLAG_WIDS*/
     }
     [Compact]
     [CCode(type="struct server_gui", cname="struct server_gui")]
@@ -78,4 +79,5 @@ namespace XchatFrontend {
     public enum Fia { // frontend input add, methinks.
         READ=1, WRITE=2, EX=4, FD=8
     }
+
 }

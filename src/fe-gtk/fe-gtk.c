@@ -216,32 +216,8 @@ void fe_input_remove (int tag){g_source_remove (tag);}
 int fe_input_add (int sok, int flags, void *func, void *data){vala_fe_input_add(sok, flags, func, data);}
 void fe_set_topic (session *sess, char *topic, char *stripped_topic){vala_fe_set_topic(sess, topic, stripped_topic);}
 void fe_set_hilight (struct session *sess){vala_fe_set_highlight(sess);}
-
-static void
-fe_update_mode_entry (session *sess, GtkWidget *entry, char **text, char *new_text)
-{
-	if (!sess->gui->is_tab || sess == current_tab)
-	{
-		if (sess->gui->flag_wid[0])	/* channel mode buttons enabled? */
-			gtk_entry_set_text (GTK_ENTRY (entry), new_text);
-	} else
-	{
-		if (sess->gui->is_tab)
-		{
-			if (*text)
-				free (*text);
-			*text = strdup (new_text);
-		}
-	}
-}
-
-void
-fe_update_channel_key (struct session *sess)
-{
-	fe_update_mode_entry (sess, sess->gui->key_entry,
-								 &sess->res->key_text, sess->channelkey);
-	fe_set_title (sess);
-}
+static void fe_update_mode_entry (session *sess, GtkWidget *entry, char **text, char *new_text){vala_fe_update_mode_entry(sess, entry, text, new_text);}
+void fe_update_channel_key (struct session *sess){fe_update_mode_entry (sess, sess->gui->key_entry,&sess->res->key_text, sess->channelkey);fe_set_title (sess);}
 
 void
 fe_update_channel_limit (struct session *sess)

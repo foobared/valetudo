@@ -66,6 +66,17 @@ uint vala_fe_input_add (int sok, int flags, IOFunc func) {
     return tag;
 }
 
+void vala_fe_update_mode_entry (Session* s, Gtk.Entry entry, char** text, string new_text) {
+    if (!s->gui->is_tab || s == current_tab) {
+        if (null != (s->gui->flag_wid[0])) /* channel mode buttons enabled? */
+            entry.set_text(new_text);
+    } else if (s->gui->is_tab) {
+        // we should free *text here, but we don't because it won't be
+        // necessary anymore when allocation will be in vala--
+        *text = new_text.dup();
+    }
+}
+
 static bool done_rc = false;
 Gtk.Style vala_create_input_style (Gtk.Style style) {
     int ColFg = 34; // it's a define
