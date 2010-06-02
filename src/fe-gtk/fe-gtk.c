@@ -219,15 +219,8 @@ void fe_set_hilight (struct session *sess){vala_fe_set_highlight(sess);}
 static void fe_update_mode_entry (session *sess, GtkWidget *entry, char **text, char *new_text){vala_fe_update_mode_entry(sess, entry, text, new_text);}
 void fe_update_channel_key (struct session *sess){fe_update_mode_entry (sess, sess->gui->key_entry,&sess->res->key_text, sess->channelkey);fe_set_title (sess);}
 void fe_update_channel_limit (struct session *sess){vala_fe_update_channel_limit(sess);}
-int fe_is_chanwindow (struct server *serv){vala_fe_is_chanwindow();}
-
-int
-fe_is_banwindow (struct session *sess)
-{
-   if (!sess->res->banlist_window)
-     return 0;
-   return 1;
-}
+int fe_is_chanwindow (struct server *serv){vala_fe_is_chanwindow(serv);}
+int fe_is_banwindow (struct session *sess){vala_fe_is_banwindow(sess);}
 
 void
 fe_notify_update (char *name)

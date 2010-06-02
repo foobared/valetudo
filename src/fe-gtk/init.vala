@@ -92,6 +92,12 @@ int vala_fe_is_chanwindow (Server* serv) {
     return 1;
 }
 
+int vala_fe_is_banwindow (Session* s) {
+    if (null == s->res->banlist_window)
+        return 0;
+    return 1;
+}
+
 static bool done_rc = false;
 Gtk.Style vala_create_input_style (Gtk.Style style) {
     int ColFg = 34; // it's a define

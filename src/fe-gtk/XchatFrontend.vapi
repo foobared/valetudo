@@ -24,6 +24,7 @@ namespace XchatFrontend {
         string topic_text;
         char* limit_text; // leave char* or valac will complain
         void* buffer;
+        Gtk.Window banlist_window;
     }
     [CCode(type="struct session", cname="struct session")]
     public struct Session {
