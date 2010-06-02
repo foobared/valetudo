@@ -10,6 +10,7 @@ namespace XchatFrontend {
         Gtk.Entry limit_entry;
         Gtk.Entry key_entry;
         Gtk.Button[] flag_wid; /*NUM_FLAG_WIDS*/
+        Gtk.Widget[] menu_item; /*MENU_ID_NUM*/
         Gtk.Window window;
         Gtk.Widget bar;
     }
@@ -93,9 +94,20 @@ namespace XchatFrontend {
     public enum Fia { // frontend input add, methinks.
         READ=1, WRITE=2, EX=4, FD=8
     }
+    [CCode(cprefix="FE_SE_")]
+    public enum FeSe { // Frontend server
+        CONNECT, LOGGEDIN, DISCONNECT, RECONDELAY, CONNECTING
+    }
+    [CCode(cprefix="MENU_ID_")]
+    public enum MenuId {
+        AWAY, MENUBAR, TOPICBAR, USERLIST, ULBUTTONS, MODEBUTTONS,
+        LAYOUT_TABS, LAYOUT_TREE, DISCONNECT, RECONNECT, JOIN, USERMENU
+    }
     void fe_set_title(Session* s);
     void notify_gui_update();
     void mg_tab_close(Session* s);
     void mg_progressbar_create(SessionGui* sg);
     void mg_progressbar_destroy(SessionGui* sg);
+    void joind_open(Server* s);
+    void joind_close(Server* s);
 }

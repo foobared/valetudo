@@ -248,6 +248,43 @@ void fe_set_hilight (Session* s) {
         fe_flash_window(s); // taskbar flash
 }
 
+void fe_server_event (Server* serv, int type, int arg) {
+    sess_list.foreach((sess) => {
+        var s = (Session*) sess;
+        if (s->server == serv && (current_tab == s || !s->gui->is_tab)) {
+            SessionGui* gui = s->gui;
+
+            switch (type) {
+            case FeSe.CONNECTING:  /* connecting in progress */
+            case FeSe.RECONDELAY:  /* reconnect delay begun */
+                /* enable Disconnect item */
+                (gui->menu_item[MenuId.DISCONNECT]).set_sensitive(true);
+                break;
+            case FeSe.CONNECT:
+                /* enable Disconnect and Away menu items */
+                (gui->menu_item[MenuId.AWAY]).set_sensitive(true);
+                (gui->menu_item[MenuId.DISCONNECT]).set_sensitive(true);
+                break;
+            case FeSe.LOGGEDIN:    /* end of MOTD */
+                (gui->menu_item[MenuId.JOIN]).set_sensitive(true);
+                /* if number of auto-join channels is zero, open joind */
+                if (arg == 0)
+                    joind_open(serv);
+                break;
+            case FeSe.DISCONNECT:
+                /* disable Disconnect and Away menu items */
+                (gui->menu_item[MenuId.AWAY]).set_sensitive(false);
+                (gui->menu_item[MenuId.DISCONNECT]).set_sensitive(false);
+                (gui->menu_item[MenuId.JOIN]).set_sensitive(false);
+                /* close the join-dialog, if one exists */
+                joind_close(serv);
+                break;
+            }
+        }
+    });
+}
+
+
 
 ////////
 
