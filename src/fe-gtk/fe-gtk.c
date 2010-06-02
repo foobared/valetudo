@@ -218,17 +218,7 @@ void fe_set_topic (session *sess, char *topic, char *stripped_topic){vala_fe_set
 void fe_set_hilight (struct session *sess){vala_fe_set_highlight(sess);}
 static void fe_update_mode_entry (session *sess, GtkWidget *entry, char **text, char *new_text){vala_fe_update_mode_entry(sess, entry, text, new_text);}
 void fe_update_channel_key (struct session *sess){fe_update_mode_entry (sess, sess->gui->key_entry,&sess->res->key_text, sess->channelkey);fe_set_title (sess);}
-
-void
-fe_update_channel_limit (struct session *sess)
-{
-	char tmp[16];
-
-	sprintf (tmp, "%d", sess->limit);
-	fe_update_mode_entry (sess, sess->gui->limit_entry,
-								 &sess->res->limit_text, tmp);
-	fe_set_title (sess);
-}
+void fe_update_channel_limit (struct session *sess){vala_fe_update_channel_limit(sess);}
 
 int
 fe_is_chanwindow (struct server *serv)

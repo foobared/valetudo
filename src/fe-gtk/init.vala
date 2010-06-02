@@ -67,6 +67,8 @@ uint vala_fe_input_add (int sok, int flags, IOFunc func) {
 }
 
 void vala_fe_update_mode_entry (Session* s, Gtk.Entry entry, char** text, string new_text) {
+    // investigate into why I'm called two times every time
+
     if (!s->gui->is_tab || s == current_tab) {
         if (null != (s->gui->flag_wid[0])) /* channel mode buttons enabled? */
             entry.set_text(new_text);
@@ -75,6 +77,13 @@ void vala_fe_update_mode_entry (Session* s, Gtk.Entry entry, char** text, string
         // necessary anymore when allocation will be in vala--
         *text = new_text.dup();
     }
+}
+
+void vala_fe_update_channel_limit (Session* s) {
+    // investigate into why I'm called two times every time
+    var str = (s->limit).to_string();
+    vala_fe_update_mode_entry(s, s->gui->limit_entry, &s->res->limit_text, str);
+    fe_set_title(s);
 }
 
 static bool done_rc = false;

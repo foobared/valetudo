@@ -7,6 +7,7 @@ namespace XchatFrontend {
         bool is_tab;
         XText xtext;
         Gtk.Entry topic_entry;
+        Gtk.Entry limit_entry;
         Gtk.Button[] flag_wid; /*NUM_FLAG_WIDS*/
     }
     [Compact]
@@ -20,6 +21,7 @@ namespace XchatFrontend {
     [CCode(type="struct restore_gui", cname="struct restore_gui")]
     public struct RestoreGui {
         string topic_text;
+        char* limit_text; // leave char* or valac will complain
         void* buffer;
     }
     [CCode(type="struct session", cname="struct session")]
@@ -31,6 +33,7 @@ namespace XchatFrontend {
         SessionGui* gui;
         RestoreGui* res;
         int type;
+        int limit;
     }
     [CCode(type="struct xchatprefs", cname="struct xchatprefs")]
     public struct XchatPrefs {
@@ -79,5 +82,5 @@ namespace XchatFrontend {
     public enum Fia { // frontend input add, methinks.
         READ=1, WRITE=2, EX=4, FD=8
     }
-
+    void fe_set_title(Session* s);
 }
