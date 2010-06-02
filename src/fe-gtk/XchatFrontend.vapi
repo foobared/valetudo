@@ -10,6 +10,7 @@ namespace XchatFrontend {
         Gtk.Entry limit_entry;
         Gtk.Button[] flag_wid; /*NUM_FLAG_WIDS*/
         Gtk.Window window;
+        Gtk.Widget bar;
     }
     [Compact]
     [CCode(type="struct server_gui", cname="struct server_gui")]
@@ -30,6 +31,7 @@ namespace XchatFrontend {
     }
     [CCode(type="struct session", cname="struct session")]
     public struct Session {
+        Server* server;
         string channel;
         bool new_data;
         bool msg_said;
@@ -92,4 +94,5 @@ namespace XchatFrontend {
     void notify_gui_update();
     void mg_tab_close(Session* s);
     void mg_progressbar_create(SessionGui* sg);
+    void mg_progressbar_destroy(SessionGui* sg);
 }

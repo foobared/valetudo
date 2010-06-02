@@ -213,27 +213,6 @@ fe_new_server (struct server *serv)
 void fe_idle_add (void *func, void *data){g_idle_add (func, data);}
 void fe_input_remove (int tag){g_source_remove (tag);}
 void fe_update_channel_key (struct session *sess){fe_update_mode_entry (sess, sess->gui->key_entry,&sess->res->key_text, sess->channelkey);fe_set_title (sess);}
-
-void
-fe_progressbar_end (server *serv)
-{
-	GSList *list = sess_list;
-	session *sess;
-
-	while (list)				  /* check all windows that use this server and  *
-									   * remove the connecting graph, if it has one. */
-	{
-		sess = list->data;
-		if (sess->server == serv)
-		{
-			if (sess->gui->bar)
-				mg_progressbar_destroy (sess->gui);
-			sess->res->c_graph = FALSE;
-		}
-		list = list->next;
-	}
-}
-
 void fe_beep(void){gdk_beep();}
 
 #ifndef WIN32

@@ -174,6 +174,17 @@ void fe_progressbar_start (Session *s) {
         s->res->c_graph = true;
 }
 
+void fe_progressbar_end (Server* serv) {
+    sess_list.foreach((sess) => {
+        var s = (Session*) sess;
+        if (s->server == serv) {
+            if (null != s->gui->bar)
+                mg_progressbar_destroy(s->gui);
+            s->res->c_graph = false;
+        }
+    });
+}
+
 void fe_print_text (Session* s, string text, time_t time) {
     PrintTextRaw(s->res->buffer, text, prefs.indent_nicks, time);
     if (!s->new_data && s != current_tab &&
