@@ -409,48 +409,6 @@ fe_confirm (const char *message, void (*yesproc)(void *), void (*noproc)(void *)
 								FRF_WRITE|FRF_FILTERISINITIAL|FRF_NOASKOVERWRITE);
 }
 
-int
-fe_gui_info (session *sess, int info_type)
-{
-	switch (info_type)
-	{
-	case 0:	/* window status */
-#if GTK_CHECK_VERSION(2,20,0)
-		if (!gtk_widget_get_visible (GTK_WINDOW (sess->gui->window)))
-#else
-		if (!GTK_WIDGET_VISIBLE (GTK_WINDOW (sess->gui->window)))
-#endif
-			return 2;	/* hidden (iconified or systray) */
-#if GTK_CHECK_VERSION(2,4,0)
-		if (gtk_window_is_active (GTK_WINDOW (sess->gui->window)))
-#else
-#if GTK_CHECK_VERSION(2,2,0)
-		if (GTK_WINDOW (sess->gui->window)->is_active)
-#endif
-#endif
-			return 1;	/* active/focused */
-
-		return 0;		/* normal (no keyboard focus or behind a window) */
-	}
-
-	return -1;
-}
-
-void *
-fe_gui_info_ptr (session *sess, int info_type)
-{
-	switch (info_type)
-	{
-	case 0:	/* native window pointer (for plugins) */
-#ifdef WIN32
-		return GDK_WINDOW_HWND (sess->gui->window->window);
-#else
-		return sess->gui->window;
-#endif
-	}
-	return NULL;
-}
-
 void
 fe_get_file (const char *title, char *initial,
 				 void (*callback) (void *userdata, char *file), void *userdata,

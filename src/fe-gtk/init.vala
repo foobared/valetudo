@@ -321,6 +321,27 @@ void fe_set_inputbox_cursor (Session *s, int delta, int pos) {
     }
 }
 
+void *fe_gui_info_ptr (Session *s, int info_type) {
+    switch (info_type) {
+    case 0: /* native window pointer (for plugins) */
+        return s->gui->window;
+    }
+    return null;
+}
+
+int fe_gui_info (Session *s, int info_type) {
+    switch (info_type) {
+    case 0: /* window status */
+        if (!(s->gui->window).get_visible())
+            return 2;   /* hidden (iconified or systray) */
+        if ((s->gui->window).is_active)
+            return 1;   /* active/focused */
+        return 0;       /* normal (no keyboard focus or behind a window) */
+    }
+
+    return -1;
+}
+
 
 ////////
 
