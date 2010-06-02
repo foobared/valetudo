@@ -188,8 +188,6 @@ char *cursor_color_rc =
 	"}"
 	"widget \"*.xchat-inputbox\" style : application \"xc-ib-st\"";
 
-GtkStyle *create_input_style(GtkStyle *style){return vala_create_input_style(style);}
-void fe_init(void){vala_fe_init();}
 void fe_main(void){gtk_main();}
 void fe_cleanup (void){}
 void fe_exit (void){gtk_main_quit();}
@@ -199,8 +197,10 @@ int fe_timeout_add (int interval, void *callback, void *userdata)
 	// not dropping userdata.
 	return vala_fe_timeout_add(interval, callback, userdata);
 }
-void fe_timeout_remove(int tag){vala_fe_timeout_remove(tag);}
-void fe_new_window(session *sess, int focus){vala_fe_new_window(sess, focus);}
+int fe_input_add (int sok, int flags, void *func, void *data) {
+	// same stuff as above
+	vala_fe_input_add(sok, flags, func, data);
+}
 
 void
 fe_new_server (struct server *serv)
@@ -210,17 +210,9 @@ fe_new_server (struct server *serv)
 	memset (serv->gui, 0, sizeof (struct server_gui));
 }
 
-void fe_message(char *msg, int flags){vala_fe_message(msg, flags);}
 void fe_idle_add (void *func, void *data){g_idle_add (func, data);}
 void fe_input_remove (int tag){g_source_remove (tag);}
-int fe_input_add (int sok, int flags, void *func, void *data){vala_fe_input_add(sok, flags, func, data);}
-void fe_set_topic (session *sess, char *topic, char *stripped_topic){vala_fe_set_topic(sess, topic, stripped_topic);}
-void fe_set_hilight (struct session *sess){vala_fe_set_highlight(sess);}
-static void fe_update_mode_entry (session *sess, GtkWidget *entry, char **text, char *new_text){vala_fe_update_mode_entry(sess, entry, text, new_text);}
 void fe_update_channel_key (struct session *sess){fe_update_mode_entry (sess, sess->gui->key_entry,&sess->res->key_text, sess->channelkey);fe_set_title (sess);}
-void fe_update_channel_limit (struct session *sess){vala_fe_update_channel_limit(sess);}
-int fe_is_chanwindow (struct server *serv){vala_fe_is_chanwindow(serv);}
-int fe_is_banwindow (struct session *sess){vala_fe_is_banwindow(sess);}
 
 void
 fe_notify_update (char *name)
@@ -275,7 +267,6 @@ fe_progressbar_end (server *serv)
 	}
 }
 
-void fe_print_text(struct session *sess, char *text, time_t stamp){vala_fe_print_text(sess, text, stamp);}
 void fe_beep(void){gdk_beep();}
 
 #ifndef WIN32
@@ -565,12 +556,6 @@ fe_set_inputbox_contents (session *sess, char *text)
 			free (sess->res->input_text);
 		sess->res->input_text = strdup (text);
 	}
-}
-
-void
-fe_open_url (const char *url)
-{
-	vala_fe_open_url(url);
 }
 
 void

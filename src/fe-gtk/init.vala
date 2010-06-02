@@ -16,7 +16,7 @@ void vala_redraw_trans_xtexts () {
     });
 }
 
-void vala_fe_new_window (Session* s, int focus) {
+void fe_new_window (Session* s, int focus) {
     int tab = 0;
     if (s->type == 3 /*SESS_DIALOG*/) {
         if(prefs.privmsgtab) tab = 1;
@@ -26,7 +26,7 @@ void vala_fe_new_window (Session* s, int focus) {
     mg_changui_new(s, null, tab, focus);
 }
 
-void vala_fe_message (string msg, int flags) {
+void fe_message (string msg, int flags) {
     var type = Gtk.MessageType.WARNING;
 
     if (0 != (flags & FeMsg.ERROR))
@@ -66,7 +66,7 @@ uint vala_fe_input_add (int sok, int flags, IOFunc func) {
     return tag;
 }
 
-void vala_fe_update_mode_entry (Session* s, Gtk.Entry entry, char** text, string new_text) {
+void fe_update_mode_entry (Session* s, Gtk.Entry entry, char** text, string new_text) {
     // investigate into why I'm called two times every time
 
     if (!s->gui->is_tab || s == current_tab) {
@@ -79,27 +79,27 @@ void vala_fe_update_mode_entry (Session* s, Gtk.Entry entry, char** text, string
     }
 }
 
-void vala_fe_update_channel_limit (Session* s) {
+void fe_update_channel_limit (Session* s) {
     // investigate into why I'm called two times every time
     var str = (s->limit).to_string();
-    vala_fe_update_mode_entry(s, s->gui->limit_entry, &s->res->limit_text, str);
+    fe_update_mode_entry(s, s->gui->limit_entry, &s->res->limit_text, str);
     fe_set_title(s);
 }
 
-int vala_fe_is_chanwindow (Server* serv) {
+int fe_is_chanwindow (Server* serv) {
     if (null == serv->gui->chanlist_window)
         return 0;
     return 1;
 }
 
-int vala_fe_is_banwindow (Session* s) {
+int fe_is_banwindow (Session* s) {
     if (null == s->res->banlist_window)
         return 0;
     return 1;
 }
 
 static bool done_rc = false;
-Gtk.Style vala_create_input_style (Gtk.Style style) {
+Gtk.Style create_input_style (Gtk.Style style) {
     int ColFg = 34; // it's a define
     int ColBg = 35;
     Pango.FontDescription fd;
@@ -110,7 +110,7 @@ Gtk.Style vala_create_input_style (Gtk.Style style) {
     if (style.font_desc.get_size() == 0)
     {
         var buf = "Failed to open font:\n\n%s".printf(prefs.font_normal);
-        vala_fe_message(buf, FeMsg.ERROR);
+        fe_message(buf, FeMsg.ERROR);
         fd = Pango.FontDescription.from_string("sans 11");
         style.font_desc = fd;
     }
@@ -131,7 +131,7 @@ Gtk.Style vala_create_input_style (Gtk.Style style) {
     return style;
 }
 
-void vala_fe_init () {
+void fe_init () {
     palette_load ();
     key_init ();
     pixmaps_init ();
@@ -145,11 +145,11 @@ uint vala_fe_timeout_add (int interval, SourceFunc callback) {
     return Timeout.add(interval, callback);
 }
 
-void vala_fe_timeout_remove (int tag) {
+void fe_timeout_remove (int tag) {
     Source.remove(tag);
 }
 
-void vala_fe_print_text (Session* s, string text, time_t time) {
+void fe_print_text (Session* s, string text, time_t time) {
     PrintTextRaw(s->res->buffer, text, prefs.indent_nicks, time);
     if (!s->new_data && s != current_tab &&
         s->gui->is_tab && !s->nick_said && time == 0) {
@@ -168,7 +168,7 @@ bool try_browser (string browser, string url) {
     return true;
 }
 
-void vala_fe_open_url (string url) {
+void fe_open_url (string url) {
     Func test;
     test = (url) => {
         string u = (string)url;
@@ -182,7 +182,7 @@ void vala_fe_open_url (string url) {
     } else test(url);
 }
 
-void vala_fe_set_topic (Session* s, string topic, string stripped_topic) {
+void fe_set_topic (Session* s, string topic, string stripped_topic) {
     if (!s->gui->is_tab || s == current_tab) {
         (s->gui->topic_entry).set_text(stripped_topic);
         mg_set_topic_tip(s);
@@ -191,7 +191,7 @@ void vala_fe_set_topic (Session* s, string topic, string stripped_topic) {
     }
 }
 
-void vala_fe_set_highlight (Session* s) {
+void fe_set_hilight (Session* s) {
     if (s->gui->is_tab)
         fe_set_tab_color(s, 3); // set tab to blue
 
