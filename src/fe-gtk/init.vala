@@ -311,6 +311,17 @@ int fe_get_inputbox_cursor (Session *s) {
     return (s->gui->input_box).get_position();
 }
 
+void fe_set_inputbox_cursor (Session *s, int delta, int pos) {
+    if (!s->gui->is_tab || s == current_tab) {
+        if (0 != delta)
+            pos += (s->gui->input_box).get_position();
+        (s->gui->input_box).set_position(pos);
+    } else {
+        /* we don't support changing non-front tabs yet */
+    }
+}
+
+
 ////////
 
 void vala_log(string ss) {

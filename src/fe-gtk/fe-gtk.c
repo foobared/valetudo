@@ -452,20 +452,6 @@ fe_gui_info_ptr (session *sess, int info_type)
 }
 
 void
-fe_set_inputbox_cursor (session *sess, int delta, int pos)
-{
-	if (!sess->gui->is_tab || sess == current_tab)
-	{
-		if (delta)
-			pos += SPELL_ENTRY_GET_POS (sess->gui->input_box);
-		SPELL_ENTRY_SET_POS (sess->gui->input_box, pos);
-	} else
-	{
-		/* we don't support changing non-front tabs yet */
-	}
-}
-
-void
 fe_get_file (const char *title, char *initial,
 				 void (*callback) (void *userdata, char *file), void *userdata,
 				 int flags)
