@@ -16,6 +16,8 @@
 
 #define rfc_tolower(c) (rfc_tolowertab[(unsigned char)(c)])
 
+#define NEW(type) extern struct type * type##_new(void){void* mem=malloc(sizeof(struct type));memset(mem,0,sizeof(struct type));return (struct type *)mem;} extern void type##_free(struct type * a){free(a);}
+
 extern const unsigned char rfc_tolowertab[];
 
 int my_poptParseArgvString(const char * s, int * argcPtr, char *** argvPtr);

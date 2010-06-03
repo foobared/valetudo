@@ -75,6 +75,10 @@ uint vala_fe_input_add (int sok, int flags, IOFunc func) {
     return tag;
 }
 
+void fe_new_server (Server* serv) {
+    serv->gui = new ServerGui();
+}
+
 void fe_notify_update (string? name) {
     if (null == name)
         notify_gui_update();
@@ -217,7 +221,6 @@ void fe_print_text (Session* s, string text, time_t time) {
 }
 
 bool try_browser (string browser, string url) {
-    Pid pid;
     var path = Environment.find_program_in_path(browser);
     if (null == path) return false;
     string[] argv = {path, url, null};
@@ -452,6 +455,63 @@ void dcc_saveas_cb (DCC *dcc, string? file) {
                 dcc_abort(dcc->serv->front_session, dcc);
         }
     }
+}
+
+// currently broken.
+void __gtkutil_file_req (string title, void* cb, void* userdata,
+                       string? filter, int flags)
+{
+    print("haloo.\n");
+    Gtk.FileChooserDialog dialog;
+    //extern char *get_xdir_fs (void);
+
+    if (0 != (flags & Frf.WRITE)) {
+        dialog = new Gtk.FileChooserDialog(title, null,
+                                           Gtk.FileChooserAction.SAVE,
+                                           Gtk.STOCK_CANCEL,
+                                           Gtk.ResponseType.CANCEL,
+                                           Gtk.STOCK_SAVE,
+                                           Gtk.ResponseType.ACCEPT, null);
+
+        if (null!=filter && 0!=filter[0]) {
+            // filter becomes initial name when saving
+            char temp[1024];
+            path_part(filter, (string)temp, 1024);
+            dialog.set_current_folder((string)temp);
+            dialog.set_current_name(file_part(filter));
+        }
+        if (0 == (flags & Frf.NOASKOVERWRITE))
+            dialog.set_do_overwrite_confirmation(true);
+    }
+    else
+        dialog = new Gtk.FileChooserDialog(title, null,
+                                           Gtk.FileChooserAction.OPEN,
+                                           Gtk.STOCK_CANCEL,
+                                           Gtk.ResponseType.CANCEL,
+                                           Gtk.STOCK_OK,
+                                           Gtk.ResponseType.ACCEPT, null);
+    if (0 != (flags & Frf.MULTIPLE))
+        dialog.set_select_multiple(true);
+    if (0 != last_dir[0])
+        dialog.set_current_folder(last_dir);
+    if (0 != (flags & Frf.ADDFOLDER))
+        dialog.add_shortcut_folder(get_xdir_fs());
+    if (0 != (flags & Frf.CHOOSEFOLDER)) {
+        dialog.set_action(Gtk.FileChooserAction.SELECT_FOLDER);
+        dialog.set_current_folder(filter);
+    } else if (null!=filter && 0!=(flags & Frf.FILTERISINITIAL)) {
+            dialog.set_current_folder(filter);
+    }
+
+    var freq = new FileReq();
+    freq.dialog = dialog;
+    freq.flags = flags;
+    freq.callback = cb;
+    freq.userdata = userdata;
+
+    dialog.response.connect(() => {gtkutil_file_req_response(freq);});
+    dialog.destroy.connect(() => {gtkutil_file_req_destroy(freq);});
+    dialog.show();
 }
 
 

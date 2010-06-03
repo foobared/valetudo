@@ -161,13 +161,7 @@ int fe_input_add (int sok, int flags, void *func, void *data) {
 	vala_fe_input_add(sok, flags, func, data);
 }
 
-void
-fe_new_server (struct server *serv)
-{
-	// this stuff is difficult to port in vala
-	serv->gui = malloc (sizeof (struct server_gui));
-	memset (serv->gui, 0, sizeof (struct server_gui));
-}
+NEW(server_gui)
 
 void fe_idle_add (void *func, void *data){g_idle_add (func, data);}
 

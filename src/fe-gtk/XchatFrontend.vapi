@@ -21,8 +21,18 @@ namespace XchatFrontend {
     }
     [Compact]
     [CCode(type="struct server_gui", cname="struct server_gui")]
-    public struct ServerGui {
-        Gtk.Window chanlist_window;
+    public class ServerGui {
+        public ServerGui ();
+        public Gtk.Window chanlist_window;
+    }
+    [Compact]
+    [CCode(type="struct file_req", cname="struct file_req")]
+    public class FileReq {
+        public FileReq ();
+        public Gtk.Dialog dialog;
+        public int flags;
+        public void* callback;
+        public void* userdata;
     }
     [CCode(type="struct server", cname="struct server")]
     public struct Server {
@@ -132,6 +142,11 @@ namespace XchatFrontend {
     public enum DccStat {
         QUEUED, ACTIVE, FAILED, DONE, CONNECTING, ABORTED
     }
+    [CCode(cprefix="FRF_")]
+    public enum Frf { // file request folder?
+        WRITE=1, MULTIPLE=2, ADDFOLDER=4, CHOOSEFOLDER=8,
+        FILTERISINITIAL=16, NOASKOVERWRITE=32
+    }
     void fe_set_title(Session* s);
     void notify_gui_update();
     void mg_tab_close(Session* s);
@@ -148,4 +163,10 @@ namespace XchatFrontend {
     bool is_dcc(DCC* d);
     void dcc_abort(Session* s, DCC* d);
     void dcc_get_with_destfile(DCC* d, string file);
+    void path_part(string file, string path, int pathlen);
+    void gtkutil_file_req_response(FileReq f);
+    void gtkutil_file_req_destroy(FileReq f);
+    string get_xdir_fs();
+    string file_part(string file);
+    string last_dir;
 }

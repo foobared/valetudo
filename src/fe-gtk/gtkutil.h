@@ -1,7 +1,39 @@
+#include <gtk/gtkbutton.h>
+#include <gtk/gtkclist.h>
+#include <gtk/gtkscrolledwindow.h>
+#include <gtk/gtkmessagedialog.h>
+#include <gtk/gtkwindow.h>
+#include <gtk/gtkhbox.h>
+#include <gtk/gtkimage.h>
+#include <gtk/gtktooltips.h>
+#include <gtk/gtklabel.h>
+#include <gtk/gtkentry.h>
+#include <gtk/gtkstock.h>
+#include <gtk/gtkspinbutton.h>
+#include <gtk/gtkclipboard.h>
 #include <gtk/gtktreeview.h>
-#include <gtk/gtktreemodel.h>
+#include <gtk/gtktreeselection.h>
+#include <gtk/gtkcellrenderertext.h>
+#include <gtk/gtkcellrenderertoggle.h>
+#include <gtk/gtkversion.h>
+#include <gtk/gtkfilechooserdialog.h>
+
+#include "../common/xchat.h"
+#include "../common/fe.h"
+#include "../common/util.h"
+#include "pixmaps.h"
 
 typedef void (*filereqcallback) (void *, char *file);
+char last_dir[256];
+
+struct file_req
+{
+	GtkWidget *dialog;
+	void *userdata;
+	filereqcallback callback;
+	int flags;		/* FRF_* flags */
+};
+
 
 #define FRF_WRITE 1
 #define FRF_MULTIPLE 2
@@ -10,7 +42,7 @@ typedef void (*filereqcallback) (void *, char *file);
 #define FRF_FILTERISINITIAL 16
 #define FRF_NOASKOVERWRITE 32
 
-void gtkutil_file_req (const char *title, void *callback, void *userdata, char *filter, int flags);
+void gtkutil_file_req (const char *title, void *callback, void *userdata, const char *filter, int flags);
 void gtkutil_destroy (GtkWidget * igad, GtkWidget * dgad);
 GtkWidget *gtkutil_button (GtkWidget *box, char *stock, char *tip, void *callback,
 				 void *userdata, char *labeltext);

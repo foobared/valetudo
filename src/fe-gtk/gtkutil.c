@@ -57,18 +57,12 @@
 extern void path_part (char *file, char *path, int pathlen);
 
 
-struct file_req
-{
-	GtkWidget *dialog;
-	void *userdata;
-	filereqcallback callback;
-	int flags;		/* FRF_* flags */
-};
+NEW(file_req)
 
-static char last_dir[256] = "";
+char last_dir[256] = "";
 
 
-static void
+void
 gtkutil_file_req_destroy (GtkWidget * wid, struct file_req *freq)
 {
 	freq->callback (freq->userdata, NULL);
@@ -149,7 +143,7 @@ gtkutil_file_req_done (GtkWidget * wid, struct file_req *freq)
 	gtk_widget_destroy (freq->dialog);
 }
 
-static void
+void
 gtkutil_file_req_response (GtkWidget *dialog, gint res, struct file_req *freq)
 {
 	switch (res)
@@ -165,7 +159,7 @@ gtkutil_file_req_response (GtkWidget *dialog, gint res, struct file_req *freq)
 }
 
 void
-gtkutil_file_req (const char *title, void *callback, void *userdata, char *filter,
+gtkutil_file_req (const char *title, void *callback, void *userdata, const char *filter,
 						int flags)
 {
 	struct file_req *freq;
