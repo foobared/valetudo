@@ -443,6 +443,17 @@ void fe_ctrl_gui (Session *s, int action, int arg) {
     }
 }
 
+void dcc_saveas_cb (DCC *dcc, string? file) {
+    if (is_dcc(dcc)) {
+        if (dcc->dccstat == DccStat.QUEUED) {
+            if (null != file)
+                dcc_get_with_destfile(dcc, file);
+            else if (dcc->resume_sent == 0)
+                dcc_abort(dcc->serv->front_session, dcc);
+        }
+    }
+}
+
 
 ////////
 

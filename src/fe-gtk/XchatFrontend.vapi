@@ -29,6 +29,7 @@ namespace XchatFrontend {
         ServerGui* gui;
         int sendq_len;
         time_t lag_sent;
+        Session* front_session;
     }
     [CCode(type="struct restore_gui", cname="struct restore_gui")]
     public struct RestoreGui {
@@ -68,6 +69,12 @@ namespace XchatFrontend {
         string font_normal;
         int style_inputbox;
         bool input_flash_hilight;
+    }
+    [CCode(cname="struct DCC", type="struct DCC")]
+    public struct DCC {
+        Server* serv;
+        int dccstat;
+        int resume_sent;
     }
     [CCode(type="struct session *")]
     Session* current_tab;
@@ -121,6 +128,10 @@ namespace XchatFrontend {
     public enum FeGuiAction {
         HIDE, SHOW, FOCUS, FLASH, COLOR, ICONIFY, MENU, ATTACH, APPLY
     }
+    [CCode(cprefix="STAT_")]
+    public enum DccStat {
+        QUEUED, ACTIVE, FAILED, DONE, CONNECTING, ABORTED
+    }
     void fe_set_title(Session* s);
     void notify_gui_update();
     void mg_tab_close(Session* s);
@@ -134,4 +145,7 @@ namespace XchatFrontend {
     void setup_apply_real(bool a, bool b);
     void add_tip(Gtk.Widget w, string s);
     int make_ping_time();
+    bool is_dcc(DCC* d);
+    void dcc_abort(Session* s, DCC* d);
+    void dcc_get_with_destfile(DCC* d, string file);
 }
