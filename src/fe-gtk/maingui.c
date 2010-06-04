@@ -3385,69 +3385,6 @@ fe_set_channel (session *sess)
 		chan_rename (sess->res->tab, sess->channel, prefs.truncchans);
 }
 
-#if 0
-void
-mg_changui_new (session *sess, restore_gui *res, int tab, int focus)
-{
-	int first_run = FALSE;
-	session_gui *gui;
-	struct User *user = NULL;
-
-	if (!res)
-	{
-		res = malloc (sizeof (restore_gui));
-		memset (res, 0, sizeof (restore_gui));
-	}
-
-	sess->res = res;
-
-	if (!sess->server->front_session)
-		sess->server->front_session = sess;
-
-	if (!is_channel (sess->server, sess->channel))
-		user = userlist_find_global (sess->server, sess->channel);
-
-	if (!tab)
-	{
-		gui = malloc (sizeof (session_gui));
-		memset (gui, 0, sizeof (session_gui));
-		gui->is_tab = FALSE;
-		sess->gui = gui;
-		mg_create_topwindow (sess);
-		fe_set_title (sess);
-		if (user && user->hostname)
-			set_topic (sess, user->hostname, user->hostname);
-		return;
-	}
-
-	if (mg_gui == NULL)
-	{
-		first_run = TRUE;
-		gui = &static_mg_gui;
-		memset (gui, 0, sizeof (session_gui));
-		gui->is_tab = TRUE;
-		sess->gui = gui;
-		mg_create_tabwindow (sess);
-		mg_gui = gui;
-		parent_window = gui->window;
-	} else
-	{
-		sess->gui = gui = mg_gui;
-		gui->is_tab = TRUE;
-	}
-
-	if (user && user->hostname)
-		set_topic (sess, user->hostname, user->hostname);
-
-	mg_add_chan (sess);
-
-	if (first_run || (prefs.newtabstofront == FOCUS_NEW_ONLY_ASKED && focus)
-			|| prefs.newtabstofront == FOCUS_NEW_ALL )
-		chan_focus (res->tab);
-}
-#endif
-
-
 GtkWidget *
 mg_create_generic_tab (char *name, char *title, int force_toplevel,
 							  int link_buttons,
