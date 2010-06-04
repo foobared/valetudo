@@ -2,6 +2,10 @@ using XchatFrontend;
 using Posix;
 using GLib;
 
+/*
+ * fe-gtk.c
+ */
+
 void fe_main () {
     Gtk.main();
 }
@@ -26,11 +30,11 @@ void vala_redraw_trans_xtexts () {
 }
 
 void fe_new_window (Session* s, int focus) {
-    int tab = 0;
+    bool tab = false;
     if (s->type == 3 /*SESS_DIALOG*/) {
-        if(prefs.privmsgtab) tab = 1;
+        if(prefs.privmsgtab) tab = true;
     } else {
-        if(prefs.tabchannels) tab = 1;
+        if(prefs.tabchannels) tab = true;
     }
     mg_changui_new(s, null, tab, focus);
 }
@@ -512,6 +516,62 @@ void __gtkutil_file_req (string title, void* cb, void* userdata,
     dialog.response.connect(() => {gtkutil_file_req_response(freq);});
     dialog.destroy.connect(() => {gtkutil_file_req_destroy(freq);});
     dialog.show();
+}
+
+
+/*
+ * maingui.c
+ */
+
+void mg_changui_new (Session* s, owned RestoreGui* res, bool tab, int focus) {
+    bool first_run = false;
+    SessionGui* gui;
+    User* user = null;
+
+    if (null == res)
+        res = new RestoreGui();
+
+    s->res = res;
+
+    if (null == s->server->front_session)
+        s->server->front_session = s;
+
+    if (!is_channel(s->server, s->channel))
+        user = userlist_find_global(s->server, s->channel);
+
+    if (!tab) {
+        gui = new SessionGui();
+        gui->is_tab = false;
+        s->gui = gui;
+        mg_create_topwindow(s);
+        fe_set_title(s);
+        if (null!=user && null!=user->hostname)
+            set_topic(s, user->hostname, user->hostname);
+        return;
+    }
+
+    if (mg_gui == null) {
+        first_run = true;
+        gui = static_mg_gui_get();
+        gui->is_tab = true;
+        s->gui = gui;
+        mg_create_tabwindow(s);
+        mg_gui = gui;
+        parent_window = gui->window;
+    } else {
+        s->gui = gui = mg_gui;
+        gui->is_tab = true;
+    }
+
+    if (null!=user && null!=user->hostname)
+        set_topic(s, user->hostname, user->hostname);
+
+    mg_add_chan(s);
+
+    if (first_run
+        || (prefs.newtabstofront == FocusNew.ONLY_ASKED && 0 != focus)
+        || prefs.newtabstofront == FocusNew.ALL )
+        chan_focus(res->tab);
 }
 
 

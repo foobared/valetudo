@@ -1,6 +1,8 @@
 extern GtkStyle *input_style;
 extern GtkWidget *parent_window;
 
+struct session_gui *mg_gui;
+
 void mg_changui_new (struct session *sess, struct restore_gui *res, int tab, int focus);
 void mg_update_xtext (GtkWidget *wid);
 void mg_open_quit_dialog (gboolean minimize_button);

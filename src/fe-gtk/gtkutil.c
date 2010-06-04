@@ -57,8 +57,6 @@
 extern void path_part (char *file, char *path, int pathlen);
 
 
-NEW(file_req)
-
 char last_dir[256] = "";
 
 

@@ -161,8 +161,6 @@ int fe_input_add (int sok, int flags, void *func, void *data) {
 	vala_fe_input_add(sok, flags, func, data);
 }
 
-NEW(server_gui)
-
 void fe_idle_add (void *func, void *data){g_idle_add (func, data);}
 
 static int

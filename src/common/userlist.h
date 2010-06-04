@@ -20,6 +20,10 @@ struct User
 	unsigned int selected:1;
 };
 
+struct user {
+    struct User;
+};
+
 #define USERACCESS_SIZE 12
 
 int userlist_add_hostname (session *sess, char *nick,

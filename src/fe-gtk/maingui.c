@@ -99,8 +99,9 @@ enum
 static void mg_create_entry (session *sess, GtkWidget *box);
 static void mg_link_irctab (session *sess, int focus);
 
-static session_gui static_mg_gui;
-static session_gui *mg_gui = NULL;	/* the shared irc tab */
+session_gui static_mg_gui;
+struct session_gui *mg_gui = NULL;	/* the shared irc tab */
+
 static int ignore_chanmode = FALSE;
 static const char chan_flags[] = { 't', 'n', 's', 'i', 'p', 'm', 'l', 'k' };
 
@@ -115,6 +116,10 @@ static PangoAttrList *nickseen_list;
 static PangoAttrList *newmsg_list;
 static PangoAttrList *plain_list = NULL;
 
+session_gui *static_mg_gui_get (void) {
+	memset (&static_mg_gui, 0, sizeof (session_gui));
+	return &static_mg_gui;
+}
 
 #ifdef USE_GTKSPELL
 
@@ -1751,7 +1756,7 @@ mg_dialog_dnd_drop (GtkWidget * widget, GdkDragContext * context, gint x,
 
 /* add a tabbed channel */
 
-static void
+void
 mg_add_chan (session *sess)
 {
 	GdkPixbuf *icon;
@@ -3009,7 +3014,7 @@ mg_create_irctab (session *sess, GtkWidget *table)
 	mg_create_center (sess, gui, vbox);
 }
 
-static void
+void
 mg_create_topwindow (session *sess)
 {
 	GtkWidget *win;
@@ -3111,7 +3116,7 @@ mg_tabwindow_de_cb (GtkWidget *widget, GdkEvent *event, gpointer user_data)
 	return TRUE;
 }
 
-static void
+void
 mg_create_tabwindow (session *sess)
 {
 	GtkWidget *win;
@@ -3380,6 +3385,7 @@ fe_set_channel (session *sess)
 		chan_rename (sess->res->tab, sess->channel, prefs.truncchans);
 }
 
+#if 0
 void
 mg_changui_new (session *sess, restore_gui *res, int tab, int focus)
 {
@@ -3439,6 +3445,8 @@ mg_changui_new (session *sess, restore_gui *res, int tab, int focus)
 			|| prefs.newtabstofront == FOCUS_NEW_ALL )
 		chan_focus (res->tab);
 }
+#endif
+
 
 GtkWidget *
 mg_create_generic_tab (char *name, char *title, int force_toplevel,
